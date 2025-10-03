@@ -1,15 +1,7 @@
-import { Exclude } from 'class-transformer';
+import { OmitType } from '@nestjs/mapped-types';
+import { UsersEntity } from '../entities/users.entity';
 
-export class UserResponseDto {
-  id: string;
-  username: string;
-
-  @Exclude()
-  password: string;
-
-  created_at: Date;
-  updated_at: Date;
-
-  @Exclude()
-  deleted_at: Date | null;
-}
+export class ResponseUserDto extends OmitType(UsersEntity, [
+  'password',
+  'deleted_at',
+] as const) {}

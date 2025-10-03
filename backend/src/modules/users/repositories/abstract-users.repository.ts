@@ -1,12 +1,12 @@
-import { UserResponseDto } from '../dtos/response-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
+import { ResponseUserDto } from '../dtos/response-user.dto';
 
 export abstract class UsersRepository {
-  abstract findAll(): Promise<UserResponseDto[]>;
-  abstract findOne(id: string): Promise<UserResponseDto>;
+  abstract findAll(): Promise<ResponseUserDto[]>;
+  abstract findOne(id: string): Promise<ResponseUserDto>;
   abstract update(
     id: string,
     updateUserDto: UpdateUserDto,
-  ): Promise<UserResponseDto>;
-  abstract softRemove(id: string): Promise<UserResponseDto>;
+  ): Promise<ResponseUserDto>;
+  abstract softRemove(id: string): Promise<ResponseUserDto>;
 }
