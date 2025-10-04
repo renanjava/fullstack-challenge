@@ -20,6 +20,10 @@ export class UsersController {
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return await this.usersService.update(id, updateUserDto);
   }
+  @Patch('active/:id')
+  async active(@Param('id') id: string) {
+    return await this.usersService.active(id);
+  }
 
   @Delete(':id')
   async softRemove(@Param('id') id: string) {
