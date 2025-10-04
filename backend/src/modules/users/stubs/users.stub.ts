@@ -1,5 +1,5 @@
 import { UsersEntity } from '../entities/users.entity';
-const { faker } = require('@faker-js/faker');
+import { faker } from '@faker-js/faker';
 
 export class UsersStub implements UsersEntity {
   id: string;
