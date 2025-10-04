@@ -15,14 +15,17 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
+    await this.findOne(id);
     return await this.usersRepository.update(id, updateUserDto);
   }
 
   async active(id: string) {
+    await this.findOne(id);
     return await this.usersRepository.update(id, { deleted_at: null } as any);
   }
 
   async softRemove(id: string) {
+    await this.findOne(id);
     return await this.usersRepository.softRemove(id);
   }
 }
