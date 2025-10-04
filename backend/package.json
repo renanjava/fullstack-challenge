@@ -33,6 +33,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
+    "@faker-js/faker": "^10.0.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
@@ -51,7 +52,7 @@
     "prisma": "^6.16.3",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.4.4",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
@@ -63,6 +64,9 @@
       "js",
       "json",
       "ts"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!@faker-js/faker)"
     ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
