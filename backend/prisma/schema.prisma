@@ -33,4 +33,16 @@ model Projects {
   created_at DateTime  @default(now()) @map("CreatedAt")
   updated_at DateTime  @default(now()) @map("UpdatedAt")
   deleted_at DateTime? @map("DeletedAt")
+  tasks      Tasks[]
+}
+
+model Tasks {
+  id          String    @id @default(uuid()) @map("Id")
+  name        String    @unique @map("Name") @db.VarChar(250)
+  description String    @unique @map("Description") @db.Text
+  created_at  DateTime  @default(now()) @map("CreatedAt")
+  updated_at  DateTime  @default(now()) @map("UpdatedAt")
+  deleted_at  DateTime? @map("DeletedAt")
+  project     Projects  @relation(fields: [project_id], references: [id])
+  project_id  String    @unique
 }
