@@ -11,12 +11,14 @@ export class PrismaCollaboratorsRepository implements CollaboratorsRepository {
     return await this.prismaClient.collaborators.findMany({
       where: { deleted_at: null },
       omit: { deleted_at: true },
+      include: { user: true },
     });
   }
   async findOne(id: string): Promise<ResponseCollaboratorDto> {
     return await this.prismaClient.collaborators.findUniqueOrThrow({
       where: { id, deleted_at: null },
       omit: { deleted_at: true },
+      include: { user: true },
     });
   }
   async update(
@@ -25,13 +27,8 @@ export class PrismaCollaboratorsRepository implements CollaboratorsRepository {
   ): Promise<ResponseCollaboratorDto> {
     return await this.prismaClient.collaborators.update({
       where: { id },
+      include: { user: true },
       data: updateCollaboratorDto,
-    });
-  }
-  async softRemove(id: string): Promise<ResponseCollaboratorDto> {
-    return await this.prismaClient.collaborators.update({
-      where: { id },
-      data: { deleted_at: new Date() },
     });
   }
 }

@@ -8,5 +8,4 @@ export abstract class CollaboratorsRepository {
     id: string,
     updateCollaboratorsDto: UpdateCollaboratorDto,
   ): Promise<ResponseCollaboratorDto>;
-  abstract softRemove(id: string): Promise<ResponseCollaboratorDto>;
 }

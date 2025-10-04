@@ -11,12 +11,14 @@ export class PrismaUsersRepository implements UsersRepository {
     return await this.prismaClient.users.findMany({
       where: { deleted_at: null },
       omit: { password: true, deleted_at: true },
+      include: { collaborator: true },
     });
   }
   async findOne(id: string): Promise<ResponseUserDto> {
     return await this.prismaClient.users.findUniqueOrThrow({
       where: { id, deleted_at: null },
       omit: { password: true, deleted_at: true },
+      include: { collaborator: true },
     });
   }
   async update(
@@ -26,6 +28,7 @@ export class PrismaUsersRepository implements UsersRepository {
     return await this.prismaClient.users.update({
       where: { id },
       omit: { password: true },
+      include: { collaborator: true },
       data: updateUserDto,
     });
   }
