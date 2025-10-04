@@ -26,3 +26,11 @@ model Collaborators {
   user       Users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id    String    @unique
 }
+
+model Projects {
+  id         String    @id @default(uuid()) @map("Id")
+  name       String    @unique @map("Name") @db.VarChar(250)
+  created_at DateTime  @default(now()) @map("CreatedAt")
+  updated_at DateTime  @default(now()) @map("UpdatedAt")
+  deleted_at DateTime? @map("DeletedAt")
+}
