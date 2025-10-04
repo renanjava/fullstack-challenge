@@ -8,10 +8,21 @@ datasource db {
 }
 
 model Users {
+  id            String         @id @default(uuid()) @map("Id")
+  username      String         @unique @map("UserName") @db.VarChar(250)
+  password      String         @map("Password") @db.VarChar(512)
+  created_at    DateTime       @default(now()) @map("CreatedAt")
+  updated_at    DateTime       @default(now()) @map("UpdatedAt")
+  deleted_at    DateTime?      @map("DeletedAt")
+  collaborator Collaborators?
+}
+
+model Collaborators {
   id         String    @id @default(uuid()) @map("Id")
-  username   String    @unique @map("UserName") @db.VarChar(250)
-  password   String    @map("Password") @db.VarChar(512)
+  name       String    @unique @map("Name") @db.VarChar(250)
   created_at DateTime  @default(now()) @map("CreatedAt")
   updated_at DateTime  @default(now()) @map("UpdatedAt")
   deleted_at DateTime? @map("DeletedAt")
+  user       Users     @relation(fields: [user_id], references: [id])
+  user_id    String    @unique
 }
