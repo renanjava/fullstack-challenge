@@ -18,13 +18,14 @@ model Users {
 }
 
 model Collaborators {
-  id         String    @id @default(uuid()) @map("Id")
-  name       String    @unique @map("Name") @db.VarChar(250)
-  created_at DateTime  @default(now()) @map("CreatedAt")
-  updated_at DateTime  @default(now()) @map("UpdatedAt")
-  deleted_at DateTime? @map("DeletedAt")
-  user       Users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id    String    @unique
+  id            String         @id @default(uuid()) @map("Id")
+  name          String         @unique @map("Name") @db.VarChar(250)
+  created_at    DateTime       @default(now()) @map("CreatedAt")
+  updated_at    DateTime       @default(now()) @map("UpdatedAt")
+  deleted_at    DateTime?      @map("DeletedAt")
+  user          Users          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String         @unique
+  time_trackers TimeTrackers[]
 }
 
 model Projects {
@@ -37,12 +38,27 @@ model Projects {
 }
 
 model Tasks {
-  id          String    @id @default(uuid()) @map("Id")
-  name        String    @unique @map("Name") @db.VarChar(250)
-  description String    @unique @map("Description") @db.Text
-  created_at  DateTime  @default(now()) @map("CreatedAt")
-  updated_at  DateTime  @default(now()) @map("UpdatedAt")
-  deleted_at  DateTime? @map("DeletedAt")
-  project     Projects  @relation(fields: [project_id], references: [id])
-  project_id  String
+  id            String         @id @default(uuid()) @map("Id")
+  name          String         @unique @map("Name") @db.VarChar(250)
+  description   String         @unique @map("Description") @db.Text
+  created_at    DateTime       @default(now()) @map("CreatedAt")
+  updated_at    DateTime       @default(now()) @map("UpdatedAt")
+  deleted_at    DateTime?      @map("DeletedAt")
+  project       Projects       @relation(fields: [project_id], references: [id])
+  project_id    String
+  time_trackers TimeTrackers[]
+}
+
+model TimeTrackers {
+  id              String         @id @default(uuid()) @map("Id")
+  start_date      DateTime       @map("StartDate")
+  end_date        DateTime       @map("EndDate")
+  timezone_id     String         @map("TimeZoneId")
+  created_at      DateTime       @default(now()) @map("CreatedAt")
+  updated_at      DateTime       @default(now()) @map("UpdatedAt")
+  deleted_at      DateTime?      @map("DeletedAt")
+  collaborators   Collaborators? @relation(fields: [collaborator_id], references: [id])
+  collaborator_id String?
+  tasks           Tasks          @relation(fields: [task_id], references: [id])
+  task_id         String
 }
