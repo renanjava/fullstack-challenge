@@ -13,17 +13,20 @@ export class PrismaProjectsRepository implements ProjectsRepository {
   ): Promise<ResponseProjectsDto> {
     return await this.prismaClient.projects.create({
       data: createProjectDto,
+      include: { tasks: true },
     });
   }
   async findAll(): Promise<ResponseProjectsDto[]> {
     return await this.prismaClient.projects.findMany({
       where: { deleted_at: null },
       omit: { deleted_at: true },
+      include: { tasks: true },
     });
   }
   async findOne(id: string): Promise<ResponseProjectsDto> {
     return await this.prismaClient.projects.findUniqueOrThrow({
       where: { id, deleted_at: null },
+      include: { tasks: true },
     });
   }
   async update(
@@ -32,6 +35,7 @@ export class PrismaProjectsRepository implements ProjectsRepository {
   ): Promise<ResponseProjectsDto> {
     return await this.prismaClient.projects.update({
       where: { id },
+      include: { tasks: true },
       data: updateProjectDto,
     });
   }

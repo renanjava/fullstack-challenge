@@ -44,5 +44,5 @@ model Tasks {
   updated_at  DateTime  @default(now()) @map("UpdatedAt")
   deleted_at  DateTime? @map("DeletedAt")
   project     Projects  @relation(fields: [project_id], references: [id])
-  project_id  String    @unique
+  project_id  String
 }
