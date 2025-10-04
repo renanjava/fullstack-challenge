@@ -29,11 +29,4 @@ export class PrismaUsersRepository implements UsersRepository {
       data: updateUserDto,
     });
   }
-  async softRemove(id: string): Promise<ResponseUserDto> {
-    return await this.prismaClient.users.update({
-      where: { id },
-      omit: { password: true },
-      data: { deleted_at: new Date() },
-    });
-  }
 }

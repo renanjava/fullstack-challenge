@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { PrismaUsersRepository } from './repositories/prisma-users.repository';
@@ -15,17 +14,18 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    await this.findOne(id);
     return await this.usersRepository.update(id, updateUserDto);
   }
 
   async active(id: string) {
-    await this.findOne(id);
-    return await this.usersRepository.update(id, { deleted_at: null } as any);
+    return await this.usersRepository.update(id, {
+      deleted_at: null,
+    } as UpdateUserDto);
   }
 
   async softRemove(id: string) {
-    await this.findOne(id);
-    return await this.usersRepository.softRemove(id);
+    return await this.usersRepository.update(id, {
+      deleted_at: new Date(),
+    } as UpdateUserDto);
   }
 }

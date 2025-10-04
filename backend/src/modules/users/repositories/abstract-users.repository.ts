@@ -8,5 +8,4 @@ export abstract class UsersRepository {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<ResponseUserDto>;
-  abstract softRemove(id: string): Promise<ResponseUserDto>;
 }

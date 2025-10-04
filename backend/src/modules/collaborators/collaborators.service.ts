@@ -1,26 +1,33 @@
+import { PrismaCollaboratorsRepository } from './repositories/prisma-collaborators.repository';
 import { Injectable } from '@nestjs/common';
-import { CreateCollaboratorDto } from './dtos/create-collaborator.dto';
 import { UpdateCollaboratorDto } from './dtos/update-collaborator.dto';
 
 @Injectable()
 export class CollaboratorsService {
-  create(createCollaboratorDto: CreateCollaboratorDto) {
-    return 'This action adds a new collaborator';
+  constructor(
+    private readonly collaboratorsRepository: PrismaCollaboratorsRepository,
+  ) {}
+  async findAll() {
+    return await this.collaboratorsRepository.findAll();
   }
 
-  findAll() {
-    return `This action returns all collaborators`;
+  async findOne(id: string) {
+    return await this.collaboratorsRepository.findOne(id);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} collaborator`;
+  async update(id: string, updateCollaboratorDto: UpdateCollaboratorDto) {
+    return await this.collaboratorsRepository.update(id, updateCollaboratorDto);
   }
 
-  update(id: number, updateCollaboratorDto: UpdateCollaboratorDto) {
-    return `This action updates a #${id} collaborator`;
+  async active(id: string) {
+    return await this.collaboratorsRepository.update(id, {
+      deleted_at: null,
+    } as UpdateCollaboratorDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} collaborator`;
+  async softRemove(id: string) {
+    return await this.collaboratorsRepository.update(id, {
+      deleted_at: new Date(),
+    } as UpdateCollaboratorDto);
   }
 }
