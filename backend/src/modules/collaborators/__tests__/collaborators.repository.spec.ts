@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CollaboratorsService } from '../collaborators.service';
 import { CollaboratorsStub } from '../stubs/collaborators.stub';
 import { UpdateCollaboratorDto } from '../dtos/update-collaborator.dto';
-import { mockCollaboratorsRepository } from '../mocks/collaborators-repository.mock';
 import { PrismaCollaboratorsRepository } from '../repositories/prisma-collaborators.repository';
+import { mockPrismaService } from '../../../prisma/mocks/prisma-service.mock';
+import { PrismaService } from '../../../prisma/prisma.service';
 
-describe('CollaboratorsService', () => {
-  let service: CollaboratorsService;
-  const collaboratorsRepository = mockCollaboratorsRepository();
+describe('CollaboratorsRepository', () => {
+  let repository: PrismaCollaboratorsRepository;
+  const prismaService = mockPrismaService();
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -21,98 +21,108 @@ describe('CollaboratorsService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CollaboratorsService,
-        {
-          provide: PrismaCollaboratorsRepository,
-          useValue: collaboratorsRepository,
-        },
+        PrismaCollaboratorsRepository,
+        { provide: PrismaService, useValue: prismaService },
       ],
     }).compile();
 
-    service = module.get<CollaboratorsService>(CollaboratorsService);
+    repository = module.get<PrismaCollaboratorsRepository>(
+      PrismaCollaboratorsRepository,
+    );
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(repository).toBeDefined();
   });
 
   it('should find all collaborators correctly', async () => {
     const collaboratorOne = new CollaboratorsStub();
     const collaboratorTwo = new CollaboratorsStub();
-    collaboratorsRepository.findAll.mockResolvedValue([
+    prismaService.collaborators.findMany.mockResolvedValue([
       collaboratorOne,
       collaboratorTwo,
     ]);
-    const result = await service.findAll();
+    const result = await repository.findAll();
 
     expect(result).toEqual([collaboratorOne, collaboratorTwo]);
-    expect(collaboratorsRepository.findAll).toHaveBeenCalledTimes(1);
+    expect(prismaService.collaborators.findMany).toHaveBeenCalledTimes(1);
   });
 
   it('should find one collaborator correctly', async () => {
     const collaborator = new CollaboratorsStub();
-    collaboratorsRepository.findOne.mockResolvedValue(collaborator);
-    const result = await service.findOne(collaborator.id);
+    prismaService.collaborators.findUniqueOrThrow.mockResolvedValue(
+      collaborator,
+    );
+    const result = await repository.findOne(collaborator.id);
 
     expect(result).toEqual(collaborator);
-    expect(collaboratorsRepository.findOne).toHaveBeenCalledWith(
-      collaborator.id,
-    );
+    expect(prismaService.collaborators.findUniqueOrThrow).toHaveBeenCalledWith({
+      where: { id: collaborator.id, deleted_at: null },
+      omit: { deleted_at: true },
+      include: { user: true },
+    });
   });
 
   it('should update collaborator correctly', async () => {
     const collaborator = new CollaboratorsStub();
     const now = new Date();
-    collaboratorsRepository.update.mockResolvedValue({
+    prismaService.collaborators.update.mockResolvedValue({
       ...collaborator,
       updated_at: now,
     });
-    const result = await service.update(collaborator.id, {
+    const result = await repository.update(collaborator.id, {
       updated_at: now,
     } as UpdateCollaboratorDto);
 
     expect(result).toEqual({ ...collaborator, updated_at: now });
-    expect(collaboratorsRepository.update).toHaveBeenCalledWith(
-      collaborator.id,
-      {
+    expect(prismaService.collaborators.update).toHaveBeenCalledWith({
+      where: { id: collaborator.id },
+      include: { user: true },
+      data: {
         updated_at: now,
       },
-    );
+    });
   });
 
   it('should active collaborator correctly', async () => {
     const now = new Date();
     const collaborator = new CollaboratorsStub({ deleted_at: now });
-    collaboratorsRepository.update.mockResolvedValue({
+    prismaService.collaborators.update.mockResolvedValue({
       ...collaborator,
       deleted_at: null,
     });
-    const result = await service.active(collaborator.id);
+    const result = await repository.update(collaborator.id, {
+      deleted_at: null,
+    } as UpdateCollaboratorDto);
 
     expect(result).toEqual({ ...collaborator, deleted_at: null });
-    expect(collaboratorsRepository.update).toHaveBeenCalledWith(
-      collaborator.id,
-      {
+    expect(prismaService.collaborators.update).toHaveBeenCalledWith({
+      where: { id: collaborator.id },
+      include: { user: true },
+      data: {
         deleted_at: null,
       },
-    );
+    });
   });
 
   it('should softRemove collaborator correctly', async () => {
     const now = new Date();
     const collaborator = new CollaboratorsStub({ deleted_at: null });
-    collaboratorsRepository.update.mockResolvedValue({
+    prismaService.collaborators.update.mockResolvedValue({
       ...collaborator,
       deleted_at: now,
     });
-    const result = await service.softRemove(collaborator.id);
+    const result = await repository.update(collaborator.id, {
+      deleted_at: null,
+    } as UpdateCollaboratorDto);
 
     expect(result).toEqual({ ...collaborator, deleted_at: now });
-    expect(collaboratorsRepository.update).toHaveBeenCalledWith(
-      collaborator.id,
-      {
-        deleted_at: now,
+    expect(prismaService.collaborators.update).toHaveBeenCalledWith({
+      where: { id: collaborator.id },
+      include: { user: true },
+      data: {
+        deleted_at: null,
       },
-    );
+    });
   });
 });

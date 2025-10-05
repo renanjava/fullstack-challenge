@@ -4,4 +4,9 @@ export const mockPrismaService = () => ({
     findUniqueOrThrow: jest.fn(),
     update: jest.fn(),
   },
+  collaborators: {
+    findMany: jest.fn(),
+    findUniqueOrThrow: jest.fn(),
+    update: jest.fn(),
+  },
 });
