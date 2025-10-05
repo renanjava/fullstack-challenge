@@ -14,6 +14,7 @@ export class PrismaProjectsRepository implements ProjectsRepository {
     return await this.prismaClient.projects.create({
       data: createProjectDto,
       include: { tasks: true },
+      omit: { deleted_at: true },
     });
   }
   async findAll(): Promise<ResponseProjectsDto[]> {
@@ -27,6 +28,7 @@ export class PrismaProjectsRepository implements ProjectsRepository {
     return await this.prismaClient.projects.findUniqueOrThrow({
       where: { id, deleted_at: null },
       include: { tasks: true },
+      omit: { deleted_at: true },
     });
   }
   async update(
