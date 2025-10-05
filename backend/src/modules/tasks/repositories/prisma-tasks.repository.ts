@@ -25,6 +25,7 @@ export class PrismaTasksRepository implements TasksRepository {
   async findOne(id: string): Promise<ResponseTaskDto> {
     return await this.prismaClient.tasks.findUniqueOrThrow({
       where: { id, deleted_at: null },
+      omit: { deleted_at: true },
       include: { project: true },
     });
   }
