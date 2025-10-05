@@ -18,9 +18,12 @@ jobs:
 
       - name: Instalar as dependências
         run: npm install
+        working-directory: ./backend
 
       - name: Rodar o ESLint
         run: npm run lint
+        working-directory: ./backend
 
       - name: Rodar os testes unitários com 80% de cobertura de código
         run: npm run test:cov
+        working-directory: ./backend
