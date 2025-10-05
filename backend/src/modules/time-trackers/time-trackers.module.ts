@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TimeTrackersService } from './time-trackers.service';
 import { TimeTrackersController } from './time-trackers.controller';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaModule } from '../../prisma/prisma.module';
 import { PrismaTimeTrackersRepository } from './repositories/prisma-time-trackers.repository';
 
 @Module({
