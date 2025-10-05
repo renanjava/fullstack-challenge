@@ -9,4 +9,10 @@ export const mockPrismaService = () => ({
     findUniqueOrThrow: jest.fn(),
     update: jest.fn(),
   },
+  timeTrackers: {
+    create: jest.fn(),
+    findMany: jest.fn(),
+    findUniqueOrThrow: jest.fn(),
+    update: jest.fn(),
+  },
 });
