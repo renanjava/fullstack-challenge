@@ -32,15 +32,15 @@ export class PrismaTimeTrackersRepository implements TimeTrackersRepository {
     });
   }
   async verifyTimeConflict(
-    newTimeTrackerEndDate: Date,
-    newTimeTrackerStartDate: Date,
+    endDate: Date,
+    startDate: Date,
   ): Promise<ResponseTimeTrackerDto[]> {
     return await this.prismaClient.$queryRaw`
-  SELECT *
-  FROM "TimeTrackers" t
-  WHERE t."StartDate" < ${newTimeTrackerEndDate}
-    AND t."EndDate" > ${newTimeTrackerStartDate}
-`;
+      SELECT * 
+      FROM "TimeTrackers" t 
+      WHERE t."StartDate" < ${endDate} 
+      AND ${startDate} < t."EndDate";
+    `;
   }
   async update(
     id: string,
