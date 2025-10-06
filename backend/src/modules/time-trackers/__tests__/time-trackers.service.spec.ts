@@ -37,21 +37,62 @@ describe('TimeTrackersService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create timetrackers correctly', async () => {
+  it('should create timetrackers correctly with expected timezone id', async () => {
     const timeTracker = new TimeTrackersStub();
     const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    timeTrackersRepository.create.mockResolvedValue(timeTracker);
+    const timeTrackerWithCorrectTimeZoneId = {
+      ...timeTracker,
+      timezone_id: timeZoneId,
+    };
+    timeTrackersRepository.create.mockResolvedValue(
+      timeTrackerWithCorrectTimeZoneId,
+    );
     timeTrackersRepository.verifyTimeConflict.mockResolvedValue([]);
     const result = await service.create(timeTracker as CreateTimeTrackerDto);
 
-    expect(result).toEqual(timeTracker);
-    expect(timeTrackersRepository.create).toHaveBeenCalledWith({
-      ...(timeTracker as CreateTimeTrackerDto),
-      timezone_id: timeZoneId,
-    });
+    expect(result).toEqual(timeTrackerWithCorrectTimeZoneId);
+    expect(timeTrackersRepository.create).toHaveBeenCalledWith(
+      timeTrackerWithCorrectTimeZoneId,
+    );
     expect(timeTrackersRepository.verifyTimeConflict).toHaveBeenCalledWith(
       timeTracker.end_date,
       timeTracker.start_date,
+    );
+    expect(timeTracker.timezone_id).not.toEqual(result.timezone_id);
+    expect(result.timezone_id).toEqual(timeZoneId);
+  });
+
+  it('should throw error when try create timetrackers with invalid dates', async () => {
+    const timeTracker = new TimeTrackersStub({
+      start_date: new Date('01-01-2025'),
+      end_date: new Date('01-01-2024'),
+    });
+
+    await expect(
+      service.create(timeTracker as CreateTimeTrackerDto),
+    ).rejects.toThrow('A data de início é maior que a data de fim');
+    expect(timeTrackersRepository.create).toHaveBeenCalledTimes(0);
+    expect(timeTrackersRepository.verifyTimeConflict).toHaveBeenCalledTimes(0);
+  });
+
+  it('should throw error when try create timetrackers with conflict dates', async () => {
+    const timeTracker = new TimeTrackersStub({
+      start_date: new Date('01-01-2025'),
+      end_date: new Date('01-01-2026'),
+    });
+    const otherTimeTracker = new TimeTrackersStub({
+      start_date: new Date('02-02-2025'),
+      end_date: new Date('04-04-2025'),
+    });
+    timeTrackersRepository.verifyTimeConflict.mockResolvedValue([timeTracker]);
+
+    await expect(
+      service.create(otherTimeTracker as CreateTimeTrackerDto),
+    ).rejects.toThrow('Já existe uma tarefa nesse intervalo de tempo');
+    expect(timeTrackersRepository.create).toHaveBeenCalledTimes(0);
+    expect(timeTrackersRepository.verifyTimeConflict).toHaveBeenCalledWith(
+      otherTimeTracker.end_date,
+      otherTimeTracker.start_date,
     );
   });
 
