@@ -4,6 +4,7 @@ import { UsersStub } from '../stubs/users.stub';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { mockUsersRepository } from '../mocks/users-repository.mock';
 import { PrismaUsersRepository } from '../repositories/prisma-users.repository';
+import { UserRegisterDto } from 'src/auth/dtos/user-register.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -27,6 +28,17 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
+  });
+
+  it('should create users correctly', async () => {
+    const user = new UsersStub();
+    usersRepository.create.mockResolvedValue(user);
+    const result = await service.create(user as UserRegisterDto);
+
+    expect(result).toEqual(user);
+    expect(usersRepository.create).toHaveBeenCalledWith(
+      user as UserRegisterDto,
+    );
   });
 
   it('should be defined', () => {

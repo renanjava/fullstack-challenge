@@ -4,6 +4,7 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { PrismaUsersRepository } from '../repositories/prisma-users.repository';
 import { mockPrismaService } from '../../../prisma/mocks/prisma-service.mock';
 import { PrismaService } from '../../../prisma/prisma.service';
+import { UserRegisterDto } from 'src/auth/dtos/user-register.dto';
 
 describe('UsersRepository', () => {
   let repository: PrismaUsersRepository;
@@ -31,6 +32,18 @@ describe('UsersRepository', () => {
 
   it('should be defined', () => {
     expect(repository).toBeDefined();
+  });
+
+  it('should create users correctly', async () => {
+    const user = new UsersStub();
+    prismaService.users.create.mockResolvedValue(user);
+    const result = await repository.create(user as UserRegisterDto);
+
+    expect(result).toEqual(user);
+    expect(prismaService.users.create).toHaveBeenCalledWith({
+      data: user as UserRegisterDto,
+      omit: { deleted_at: true, password: true },
+    });
   });
 
   it('should find all users correctly', async () => {
