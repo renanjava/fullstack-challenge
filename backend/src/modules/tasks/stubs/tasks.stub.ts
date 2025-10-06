@@ -13,8 +13,8 @@ export class TasksStub implements TasksEntity {
   constructor(data?: Partial<TasksEntity>) {
     this.id = data?.id ?? faker.database.mongodbObjectId();
     this.project_id = data?.project_id ?? faker.database.mongodbObjectId();
-    this.name = data?.name ?? faker.person.firstName();
-    this.description = data?.description ?? faker.person.fullName();
+    this.name = data?.name ?? faker.commerce.product();
+    this.description = data?.description ?? faker.lorem.sentence();
     this.created_at = data?.created_at ?? new Date();
     this.updated_at = data?.updated_at ?? new Date();
     this.deleted_at = data?.deleted_at ?? null;
