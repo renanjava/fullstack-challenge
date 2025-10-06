@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { UsersEntity } from '../entities/users.entity';
 import { faker } from '@faker-js/faker';
 
