@@ -39,14 +39,16 @@ describe('TimeTrackersService', () => {
 
   it('should create timetrackers correctly', async () => {
     const timeTracker = new TimeTrackersStub();
+    const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
     timeTrackersRepository.create.mockResolvedValue(timeTracker);
     timeTrackersRepository.verifyTimeConflict.mockResolvedValue([]);
     const result = await service.create(timeTracker as CreateTimeTrackerDto);
 
     expect(result).toEqual(timeTracker);
-    expect(timeTrackersRepository.create).toHaveBeenCalledWith(
-      timeTracker as CreateTimeTrackerDto,
-    );
+    expect(timeTrackersRepository.create).toHaveBeenCalledWith({
+      ...(timeTracker as CreateTimeTrackerDto),
+      timezone_id: timeZoneId,
+    });
     expect(timeTrackersRepository.verifyTimeConflict).toHaveBeenCalledWith(
       timeTracker.end_date,
       timeTracker.start_date,

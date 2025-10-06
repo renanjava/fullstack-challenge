@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateTimeTrackerDto {
@@ -12,8 +12,7 @@ export class CreateTimeTrackerDto {
   @Type(() => Date)
   end_date: Date;
 
-  @IsString()
-  @IsNotEmpty()
+  @Exclude()
   timezone_id: string;
 
   @IsOptional()

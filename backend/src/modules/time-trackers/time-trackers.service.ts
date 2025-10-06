@@ -32,7 +32,12 @@ export class TimeTrackersService {
       );
     }
 
-    return await this.timeTrackersRepository.create(createTimeTrackerDto);
+    const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    return await this.timeTrackersRepository.create({
+      ...createTimeTrackerDto,
+      timezone_id: timeZoneId,
+    });
   }
 
   async findAll() {
