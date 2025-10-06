@@ -6,6 +6,7 @@ import { CollaboratorsModule } from './modules/collaborators/collaborators.modul
 import { ProjectsModule } from './modules/projects/projects.module';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { TimeTrackersModule } from './modules/time-trackers/time-trackers.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { TimeTrackersModule } from './modules/time-trackers/time-trackers.module
     ProjectsModule,
     TasksModule,
     TimeTrackersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
