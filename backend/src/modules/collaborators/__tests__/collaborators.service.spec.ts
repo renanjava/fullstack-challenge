@@ -4,6 +4,7 @@ import { CollaboratorsStub } from '../stubs/collaborators.stub';
 import { UpdateCollaboratorDto } from '../dtos/update-collaborator.dto';
 import { mockCollaboratorsRepository } from '../mocks/collaborators-repository.mock';
 import { PrismaCollaboratorsRepository } from '../repositories/prisma-collaborators.repository';
+import { CreateCollaboratorDto } from '../dtos/create-collaborator.dto';
 
 describe('CollaboratorsService', () => {
   let service: CollaboratorsService;
@@ -34,6 +35,17 @@ describe('CollaboratorsService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('should create collaborators correctly', async () => {
+    const collaborator = new CollaboratorsStub();
+    collaboratorsRepository.create.mockResolvedValue(collaborator);
+    const result = await service.create(collaborator as CreateCollaboratorDto);
+
+    expect(result).toEqual(collaborator);
+    expect(collaboratorsRepository.create).toHaveBeenCalledWith(
+      collaborator as CreateCollaboratorDto,
+    );
   });
 
   it('should find all collaborators correctly', async () => {

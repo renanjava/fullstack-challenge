@@ -5,6 +5,7 @@ export const mockPrismaService = () => ({
     update: jest.fn(),
   },
   collaborators: {
+    create: jest.fn(),
     findMany: jest.fn(),
     findUniqueOrThrow: jest.fn(),
     update: jest.fn(),

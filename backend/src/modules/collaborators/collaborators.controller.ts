@@ -1,11 +1,24 @@
-import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Post,
+} from '@nestjs/common';
 import { CollaboratorsService } from './collaborators.service';
 import { UpdateCollaboratorDto } from './dtos/update-collaborator.dto';
+import { CreateCollaboratorDto } from './dtos/create-collaborator.dto';
 
 @Controller('collaborators')
 export class CollaboratorsController {
   constructor(private readonly collaboratorsService: CollaboratorsService) {}
 
+  @Post()
+  async create(@Body() createCollaboratorDto: CreateCollaboratorDto) {
+    return await this.collaboratorsService.create(createCollaboratorDto);
+  }
   @Get()
   async findAll() {
     return this.collaboratorsService.findAll();

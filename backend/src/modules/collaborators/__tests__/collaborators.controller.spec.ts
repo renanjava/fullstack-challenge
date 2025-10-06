@@ -4,6 +4,7 @@ import { CollaboratorsService } from '../collaborators.service';
 import { CollaboratorsStub } from '../stubs/collaborators.stub';
 import { mockCollaboratorsService } from '../mocks/collaborators-service.mock';
 import { UpdateCollaboratorDto } from '../dtos/update-collaborator.dto';
+import { CreateCollaboratorDto } from '../dtos/create-collaborator.dto';
 
 describe('CollaboratorsController', () => {
   let controller: CollaboratorsController;
@@ -31,6 +32,19 @@ describe('CollaboratorsController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should create collaborators correctly', async () => {
+    const collaborator = new CollaboratorsStub();
+    collaboratorsService.create.mockResolvedValue(collaborator);
+    const result = await controller.create(
+      collaborator as CreateCollaboratorDto,
+    );
+
+    expect(result).toEqual(collaborator);
+    expect(collaboratorsService.create).toHaveBeenCalledWith(
+      collaborator as CreateCollaboratorDto,
+    );
   });
 
   it('should find all collaborators correctly', async () => {
