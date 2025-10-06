@@ -20,7 +20,6 @@ export class AuthController {
   async register(
     @Body(HashUserPasswordPipe) userRegisterDto: UserRegisterDto,
   ): Promise<ResponseUserDto> {
-    console.log({ userRegisterDto });
     return await this.authService.register(userRegisterDto);
   }
 }
