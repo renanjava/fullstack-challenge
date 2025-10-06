@@ -1,6 +1,7 @@
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { ResponseUserDto } from '../dtos/response-user.dto';
-import { UserRegisterDto } from 'src/auth/dtos/user-register.dto';
+import { UserRegisterDto } from '../../../auth/dtos/user-register.dto';
+import { Users } from '@prisma/client';
 
 export abstract class UsersRepository {
   abstract create(userRegisterDto: UserRegisterDto): Promise<ResponseUserDto>;
@@ -10,4 +11,5 @@ export abstract class UsersRepository {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<ResponseUserDto>;
+  abstract findByUsernameAndReturnPassword(username: string): Promise<Users>;
 }

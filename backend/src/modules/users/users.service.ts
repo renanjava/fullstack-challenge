@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { PrismaUsersRepository } from './repositories/prisma-users.repository';
 import { UserRegisterDto } from '../../auth/dtos/user-register.dto';
+import { Users } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -33,5 +34,9 @@ export class UsersService {
     return await this.usersRepository.update(id, {
       deleted_at: new Date(),
     } as UpdateUserDto);
+  }
+
+  async findByUsernameAndReturnPassword(username: string): Promise<Users> {
+    return await this.usersRepository.findByUsernameAndReturnPassword(username);
   }
 }

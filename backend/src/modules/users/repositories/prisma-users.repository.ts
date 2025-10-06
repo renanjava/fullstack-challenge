@@ -3,7 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { UsersRepository } from './abstract-users.repository';
 import { ResponseUserDto } from '../dtos/response-user.dto';
-import { UserRegisterDto } from 'src/auth/dtos/user-register.dto';
+import { UserRegisterDto } from '../../../auth/dtos/user-register.dto';
+import { Users } from '@prisma/client';
 
 @Injectable()
 export class PrismaUsersRepository implements UsersRepository {
@@ -38,6 +39,12 @@ export class PrismaUsersRepository implements UsersRepository {
       omit: { password: true },
       include: { collaborator: true },
       data: updateUserDto,
+    });
+  }
+
+  async findByUsernameAndReturnPassword(username: string): Promise<Users> {
+    return await this.prismaClient.users.findUniqueOrThrow({
+      where: { username },
     });
   }
 }

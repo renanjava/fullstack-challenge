@@ -5,10 +5,10 @@ export class BcryptHash {
     return await bcrypt.hash(password, 10);
   }
 
-  /*static async comparePassword(
+  static async comparePassword(
     hashPass: string,
     realPass: string,
   ): Promise<boolean> {
     return await bcrypt.compare(realPass, hashPass);
-  }*/
+  }
 }
