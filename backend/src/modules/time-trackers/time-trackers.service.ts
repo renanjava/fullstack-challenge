@@ -1,5 +1,9 @@
 import { PrismaTimeTrackersRepository } from './repositories/prisma-time-trackers.repository';
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { CreateTimeTrackerDto } from './dtos/create-time-tracker.dto';
 import { UpdateTimeTrackerDto } from './dtos/update-time-tracker.dto';
 
@@ -9,6 +13,25 @@ export class TimeTrackersService {
     private readonly timeTrackersRepository: PrismaTimeTrackersRepository,
   ) {}
   async create(createTimeTrackerDto: CreateTimeTrackerDto) {
+    const endDate = createTimeTrackerDto.end_date;
+    const startDate = createTimeTrackerDto.start_date;
+
+    if (startDate > endDate) {
+      throw new BadRequestException(
+        'A data de início é maior que a data de fim',
+      );
+    }
+
+    const dateConflict = await this.timeTrackersRepository.verifyTimeConflict(
+      endDate,
+      startDate,
+    );
+    if (dateConflict.length > 0) {
+      throw new ConflictException(
+        'Já existe uma tarefa nesse intervalo de tempo',
+      );
+    }
+
     return await this.timeTrackersRepository.create(createTimeTrackerDto);
   }
 

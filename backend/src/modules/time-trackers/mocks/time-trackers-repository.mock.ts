@@ -3,4 +3,5 @@ export const mockTimeTrackersRepository = () => ({
   findAll: jest.fn(),
   findOne: jest.fn(),
   update: jest.fn(),
+  verifyTimeConflict: jest.fn(),
 });

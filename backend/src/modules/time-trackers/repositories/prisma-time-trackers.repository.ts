@@ -31,6 +31,17 @@ export class PrismaTimeTrackersRepository implements TimeTrackersRepository {
       include: { collaborators: true, tasks: true },
     });
   }
+  async verifyTimeConflict(
+    newTimeTrackerEndDate: Date,
+    newTimeTrackerStartDate: Date,
+  ): Promise<ResponseTimeTrackerDto[]> {
+    return await this.prismaClient.$queryRaw`
+  SELECT *
+  FROM "TimeTrackers" t
+  WHERE t."StartDate" < ${newTimeTrackerEndDate}
+    AND t."EndDate" > ${newTimeTrackerStartDate}
+`;
+  }
   async update(
     id: string,
     updateTimeTrackerDto: UpdateTimeTrackerDto,
