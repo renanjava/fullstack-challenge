@@ -13,7 +13,6 @@ export class PrismaUsersRepository implements UsersRepository {
     return await this.prismaClient.users.create({
       data: userRegisterDto,
       omit: { password: true, deleted_at: true },
-      include: { collaborator: true },
     });
   }
   async findAll(): Promise<ResponseUserDto[]> {
