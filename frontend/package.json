@@ -16,6 +16,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "bulma": "^1.0.4",
     "vue": "^3.5.22"
   },
   "devDependencies": {
