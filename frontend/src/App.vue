@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { loginEndPoint } from './api';
 
 export default defineComponent({
     name: 'App',
@@ -10,11 +11,11 @@ export default defineComponent({
         }
     },
     methods: {
-        submitForms() {
+        async submitForms() {
             console.log(
                 {username: this.username, password: this.password}
             );
-            
+            await loginEndPoint(this.username, this.password)
         }
     }
 })
