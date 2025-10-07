@@ -5,10 +5,13 @@ import { AuthService } from '../auth.service';
 import { UsersService } from '../../modules/users/users.service';
 import { UsersStub } from '../../modules/users/stubs/users.stub';
 import { JwtService } from '@nestjs/jwt';
+import { BcryptHash } from '../../common/utils/bcrypt-hash.util';
+import { mockJwtService } from '../mocks/jwt-service.mock';
 
 describe('AuthService', () => {
   let service: AuthService;
   const usersService = mockUsersService();
+  const jwtService = mockJwtService();
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -22,7 +25,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        JwtService,
+        { provide: JwtService, useValue: jwtService },
         { provide: UsersService, useValue: usersService },
       ],
     }).compile();
@@ -30,15 +33,26 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
   });
 
-  /*it('should auth user login correctly with valid data', async () => {
+  it('should auth user login correctly with valid data', async () => {
     const user = new UsersStub();
-    usersService.findByUsernameAndReturnPassword.mockResolvedValue(user);
-    authRepository.create.mockResolvedValue(user);
-    const result = await service.create(user as UserRegisterDto);
+    const hashedPassword = await BcryptHash.hashPassword(user.password);
+    usersService.findByUsernameAndReturnPassword.mockResolvedValue({
+      ...user,
+      password: hashedPassword,
+    });
+    jwtService.signAsync.mockResolvedValue('jwt-token-12345');
 
-    expect(result).toEqual(user);
-    expect(authRepository.create).toHaveBeenCalledWith(user as UserRegisterDto);
-  });*/
+    const result = await service.login(user as UserRegisterDto);
+
+    expect(result).toEqual({ access_token: 'jwt-token-12345' });
+    expect(usersService.findByUsernameAndReturnPassword).toHaveBeenCalledWith(
+      user.username,
+    );
+    expect(jwtService.signAsync).toHaveBeenCalledWith({
+      sub: user.id,
+      username: user.username,
+    });
+  });
 
   it('should auth create user correctly', async () => {
     const user = new UsersStub();
