@@ -54,6 +54,23 @@ describe('AuthService', () => {
     });
   });
 
+  it('should throw error when user login and password is wrong', async () => {
+    const user = new UsersStub();
+    const wrongPassword = 'errado';
+    usersService.findByUsernameAndReturnPassword.mockResolvedValue({
+      ...user,
+      password: wrongPassword,
+    });
+
+    await expect(service.login(user as UserRegisterDto)).rejects.toThrow(
+      'Senha inválida',
+    );
+    expect(usersService.findByUsernameAndReturnPassword).toHaveBeenCalledWith(
+      user.username,
+    );
+    expect(jwtService.signAsync).toHaveBeenCalledTimes(0);
+  });
+
   it('should auth create user correctly', async () => {
     const user = new UsersStub();
     usersService.create.mockResolvedValue(user);
