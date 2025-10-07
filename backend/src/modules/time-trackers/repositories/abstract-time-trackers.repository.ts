@@ -17,4 +17,7 @@ export abstract class TimeTrackersRepository {
     startDate: Date,
   ): Promise<ResponseTimeTrackerDto[]>;
   abstract getTimeTrackersFromDay(day: string): Promise<Record<string, any>>;
+  abstract getTimeTrackersFromMonth(
+    month: string,
+  ): Promise<Record<string, any>>;
 }

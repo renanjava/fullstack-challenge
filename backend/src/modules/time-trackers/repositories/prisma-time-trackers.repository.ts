@@ -57,6 +57,21 @@ export class PrismaTimeTrackersRepository implements TimeTrackersRepository {
     `;
   }
 
+  async getTimeTrackersFromMonth(month: string): Promise<Record<string, any>> {
+    return await this.prismaClient.$queryRaw`
+      SELECT 
+        TO_CHAR(DATE_TRUNC('month', ${month}::date), 'YYYY-MM') AS month,
+        SUM(
+          EXTRACT(
+            EPOCH FROM LEAST(t."EndDate", DATE_TRUNC('month', ${month}::date) + INTERVAL '1 month') 
+                  - GREATEST(t."StartDate", DATE_TRUNC('month', ${month}::date)))
+        ) / 3600 AS hours_in_month
+      FROM "TimeTrackers" t
+      WHERE t."StartDate" < DATE_TRUNC('month', ${month}::date) + INTERVAL '1 month'
+        AND t."EndDate"   > DATE_TRUNC('month', ${month}::date);
+    `;
+  }
+
   async update(
     id: string,
     updateTimeTrackerDto: UpdateTimeTrackerDto,

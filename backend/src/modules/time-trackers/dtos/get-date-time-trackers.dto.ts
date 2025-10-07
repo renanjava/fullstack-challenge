@@ -1,7 +1,7 @@
 import { IsDateString, IsNotEmpty } from 'class-validator';
 
-export class GetDayTimeTrackersDto {
+export class GetDateTimeTrackersDto {
   @IsDateString()
   @IsNotEmpty()
-  day: string;
+  date: string;
 }

@@ -52,6 +52,10 @@ export class TimeTrackersService {
     return await this.timeTrackersRepository.getTimeTrackersFromDay(day);
   }
 
+  async getTimeTrackersFromMonth(month: string) {
+    return await this.timeTrackersRepository.getTimeTrackersFromMonth(month);
+  }
+
   async update(id: string, updateTimeTrackerDto: UpdateTimeTrackerDto) {
     return await this.timeTrackersRepository.update(id, updateTimeTrackerDto);
   }
