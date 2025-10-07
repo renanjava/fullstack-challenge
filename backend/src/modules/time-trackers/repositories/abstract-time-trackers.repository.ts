@@ -12,4 +12,9 @@ export abstract class TimeTrackersRepository {
     id: string,
     updateTimeTrackersDto: UpdateTimeTrackerDto,
   ): Promise<ResponseTimeTrackerDto>;
+  abstract verifyTimeConflict(
+    endDate: Date,
+    startDate: Date,
+  ): Promise<ResponseTimeTrackerDto[]>;
+  abstract getTimeTrackersFromDay(day: string): Promise<Record<string, any>>;
 }

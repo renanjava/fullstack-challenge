@@ -48,6 +48,10 @@ export class TimeTrackersService {
     return await this.timeTrackersRepository.findOne(id);
   }
 
+  async getTimeTrackersFromDay(day: string) {
+    return await this.timeTrackersRepository.getTimeTrackersFromDay(day);
+  }
+
   async update(id: string, updateTimeTrackerDto: UpdateTimeTrackerDto) {
     return await this.timeTrackersRepository.update(id, updateTimeTrackerDto);
   }

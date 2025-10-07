@@ -10,6 +10,7 @@ import {
 import { TimeTrackersService } from './time-trackers.service';
 import { CreateTimeTrackerDto } from './dtos/create-time-tracker.dto';
 import { UpdateTimeTrackerDto } from './dtos/update-time-tracker.dto';
+import { GetDayTimeTrackersDto } from './dtos/get-day-time-trackers.dto';
 
 @Controller('time-trackers')
 export class TimeTrackersController {
@@ -28,6 +29,15 @@ export class TimeTrackersController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.timeTrackersService.findOne(id);
+  }
+
+  @Get('day/:day')
+  async getTimeTrackersFromDay(
+    @Param() getDayTimeTrackersDto: GetDayTimeTrackersDto,
+  ) {
+    return this.timeTrackersService.getTimeTrackersFromDay(
+      getDayTimeTrackersDto.day,
+    );
   }
 
   @Patch(':id')

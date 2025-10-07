@@ -42,6 +42,21 @@ export class PrismaTimeTrackersRepository implements TimeTrackersRepository {
       AND ${startDate} < t."EndDate";
     `;
   }
+
+  async getTimeTrackersFromDay(day: string): Promise<Record<string, any>> {
+    return await this.prismaClient.$queryRaw`
+      SELECT
+      ${day} AS day,
+      SUM(
+        EXTRACT(
+          EPOCH FROM LEAST(t."EndDate", ${day}::date + INTERVAL '1 day') 
+             - GREATEST(t."StartDate", ${day}::date))) / 3600 AS hours_in_day
+      FROM "TimeTrackers" t
+      WHERE t."StartDate" < ${day}::date + INTERVAL '1 day'
+      AND t."EndDate"   > ${day}::date;
+    `;
+  }
+
   async update(
     id: string,
     updateTimeTrackerDto: UpdateTimeTrackerDto,
