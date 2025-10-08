@@ -9,6 +9,7 @@
     </section>
     <h1 class="title has-text-primary-00">{{ primaryText }}</h1>
     <h3 class="subtitle is-6 has-text-primary-00">{{ secondaryText }}</h3>
+    <slot></slot>
   </div>
 </template>
 
