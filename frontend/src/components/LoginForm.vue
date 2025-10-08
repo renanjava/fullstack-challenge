@@ -17,6 +17,7 @@ export default defineComponent({
     async submitForms() {
       const response = await loginEndPoint(this.username, this.password)
       if (response.access_token) {
+        localStorage.setItem('access_token', response.access_token)
         this.successLogin = true
         this.$emit('responseForm', {
           successLogin: this.successLogin,

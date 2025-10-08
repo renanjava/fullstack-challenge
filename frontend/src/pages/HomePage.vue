@@ -2,12 +2,10 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'App',
+  name: 'HomePage',
 })
 </script>
 
-<template>
-  <router-view />
-</template>
+<template>Home Page...</template>
 
 <style scoped></style>

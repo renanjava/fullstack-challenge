@@ -20,7 +20,9 @@ export default defineComponent({
       this.error = !responseForm.successLogin
       if (this.error) {
         this.errorMessage = responseForm.errorMessage
+        return
       }
+      this.$router.push('/home')
     },
   },
 })
