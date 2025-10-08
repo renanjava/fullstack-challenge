@@ -3,8 +3,8 @@
     <h1 class="title">Time Tracker</h1>
     <h3 class="subtitle is-6 my-6">Menu principal</h3>
     <ul class="menu-list">
-      <li><a>Dashboard</a></li>
-      <li><a>Tarefas</a></li>
+      <li><a @click="redirectPage('home')">Dashboard</a></li>
+      <li><a @click="redirectPage('tasks')">Tarefas</a></li>
       <li><a>Projetos</a></li>
       <li><a>Usuários</a></li>
       <li><a>Colaboradores</a></li>
@@ -18,6 +18,11 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'BarraLateral',
+  methods: {
+    redirectPage(page: string) {
+      this.$router.push(page)
+    },
+  },
 })
 </script>
 
