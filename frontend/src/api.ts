@@ -11,3 +11,15 @@ export async function loginEndPoint(username: string, password: string) {
     console.error('Erro ao buscar usuários:', error)
   }
 }
+
+export async function getTasksEndPoint() {
+  try {
+    const res = await fetch('http://localhost:3000/tasks', {
+      method: 'GET',
+    })
+    const response = await res.json()
+    return response
+  } catch (error) {
+    console.error('Erro ao buscar tarefas:', error)
+  }
+}
