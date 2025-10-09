@@ -1,6 +1,6 @@
 <template>
   <main class="columns is-gapless is-multiline">
-    <DefaultHeader :primaryText="'Tarefas'" :secondaryText="'Gerencie e acompanhe suas tarefas'">
+    <DefaultHeader :primaryText="primaryText" :secondaryText="secondText">
       <slot></slot>
     </DefaultHeader>
   </main>
@@ -14,6 +14,10 @@ export default defineComponent({
   name: 'DefaultMain',
   components: {
     DefaultHeader,
+  },
+  props: {
+    primaryText: { type: String, required: true },
+    secondText: { type: String, required: true },
   },
 })
 </script>

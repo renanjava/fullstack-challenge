@@ -5,10 +5,10 @@
     <ul class="menu-list">
       <li><a @click="redirectPage('home')">Dashboard</a></li>
       <li><a @click="redirectPage('tasks')">Tarefas</a></li>
-      <li><a>Projetos</a></li>
-      <li><a>Usuários</a></li>
-      <li><a>Colaboradores</a></li>
-      <li><a>Relatórios</a></li>
+      <li><a @click="redirectPage('projects')">Projetos</a></li>
+      <li><a @click="redirectPage('users')">Usuários</a></li>
+      <li><a @click="redirectPage('collaborators')">Colaboradores</a></li>
+      <li><a @click="redirectPage('relatory')">Relatórios</a></li>
     </ul>
   </header>
 </template>

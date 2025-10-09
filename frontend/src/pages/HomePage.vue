@@ -12,7 +12,7 @@ export default defineComponent({
 
 <template>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
-  <DefaultMain>
+  <DefaultMain :primary-text="'Bem vindo!'" :second-text="'Visão geral do seu controle de tempo'">
     <h1>aslfals</h1>
   </DefaultMain>
 </template>
