@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { getProjectsEndPoint } from '@/api'
+import { getGenericEndPoint } from '@/api'
 import DefaultMain from '@/components/DefaultMain.vue'
 import type { IProjects } from '@/interfaces.ts/projects.interface'
 import { defineComponent } from 'vue'
@@ -24,7 +24,7 @@ export default defineComponent({
     }
   },
   async created() {
-    this.projectsList = await getProjectsEndPoint()
+    this.projectsList = await getGenericEndPoint('projects')
   },
 })
 </script>

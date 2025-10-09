@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { getUsersEndPoint } from '@/api'
+import { getGenericEndPoint } from '@/api'
 import DefaultMain from '@/components/DefaultMain.vue'
 import type { IUsers } from '@/interfaces.ts/users.interface'
 import { defineComponent } from 'vue'
@@ -24,7 +24,7 @@ export default defineComponent({
     }
   },
   async created() {
-    this.usersList = await getUsersEndPoint()
+    this.usersList = await getGenericEndPoint('users')
   },
 })
 </script>

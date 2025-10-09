@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { getTasksEndPoint } from '@/api'
+import { getGenericEndPoint } from '@/api'
 import DefaultMain from '@/components/DefaultMain.vue'
 import type { ITasks } from '@/interfaces.ts/tasks.interface'
 import { defineComponent } from 'vue'
@@ -25,7 +25,7 @@ export default defineComponent({
     }
   },
   async created() {
-    this.tasksList = await getTasksEndPoint()
+    this.tasksList = await getGenericEndPoint('tasks')
   },
 })
 </script>

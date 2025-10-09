@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { getCollaboratorsEndPoint } from '@/api'
+import { getGenericEndPoint } from '@/api'
 import DefaultMain from '@/components/DefaultMain.vue'
 import type { ICollaborators } from '@/interfaces.ts/collaborators.interface'
 import { defineComponent } from 'vue'
@@ -27,7 +27,7 @@ export default defineComponent({
     }
   },
   async created() {
-    this.collaboratorsList = await getCollaboratorsEndPoint()
+    this.collaboratorsList = await getGenericEndPoint('collaborators')
   },
 })
 </script>
