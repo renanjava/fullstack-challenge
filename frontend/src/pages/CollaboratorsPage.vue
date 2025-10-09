@@ -4,15 +4,14 @@
     :primary-text="'Colaboradores'"
     :second-text="'Gerencie os colaboradores do sistema'"
   >
-    <div class="box" v-for="collaborator in collaboratorsList">
-      <p class="title">{{ collaborator.name }}</p>
-    </div>
+    <List :list="collaboratorsList" />
   </DefaultMain>
 </template>
 
 <script lang="ts">
 import { getGenericEndPoint } from '@/api'
 import DefaultMain from '@/components/DefaultMain.vue'
+import List from '@/components/List.vue'
 import type { ICollaborators } from '@/interfaces.ts/collaborators.interface'
 import { defineComponent } from 'vue'
 
@@ -20,6 +19,7 @@ export default defineComponent({
   name: 'CollaboratorsPage',
   components: {
     DefaultMain,
+    List,
   },
   data() {
     return {
