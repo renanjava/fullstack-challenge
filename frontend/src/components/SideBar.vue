@@ -2,13 +2,10 @@
   <header>
     <h1 class="title">Time Tracker</h1>
     <h3 class="subtitle is-6 my-6">Menu principal</h3>
-    <ul class="menu-list">
-      <li><a @click="redirectPage('home')">Dashboard</a></li>
-      <li><a @click="redirectPage('tasks')">Tarefas</a></li>
-      <li><a @click="redirectPage('projects')">Projetos</a></li>
-      <li><a @click="redirectPage('users')">Usuários</a></li>
-      <li><a @click="redirectPage('collaborators')">Colaboradores</a></li>
-      <li><a @click="redirectPage('relatory')">Relatórios</a></li>
+    <ul v-for="item in menuItems" :key="item.title" class="menu-list">
+      <li>
+        <a @click="redirectPage(item.url)">{{ item.title }}</a>
+      </li>
     </ul>
   </header>
 </template>
@@ -22,6 +19,18 @@ export default defineComponent({
     redirectPage(page: string) {
       this.$router.push(page)
     },
+  },
+  data() {
+    return {
+      menuItems: [
+        { title: 'Dashboard', url: '/home' },
+        { title: 'Tarefas', url: '/tasks' },
+        { title: 'Projetos', url: '/projects' },
+        { title: 'Usuários', url: '/users' },
+        { title: 'Colaboradores', url: '/collaborators' },
+        { title: 'Relatórios', url: '/relatory' },
+      ],
+    }
   },
 })
 </script>

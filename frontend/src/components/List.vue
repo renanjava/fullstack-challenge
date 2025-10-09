@@ -3,7 +3,8 @@
   <div v-else-if="list.length > 0" class="box" v-for="(item, index) in list" :key="index">
     <div v-for="[key, value] in Object.entries(sanitizeItem(item))">
       <div class="subtitle" v-if="isJsonArray(value)">
-        {{ key }}: {{ value.map((v: any) => sanitizeItem(v)) }}
+        {{ key }}:
+        {{ value.length > 0 ? value.map((v: any) => sanitizeItem(v)) : 'nenhum cadastrado' }}
       </div>
       <div class="subtitle" v-else-if="isJsonLike(value)">{{ key }}: {{ sanitizeItem(value) }}</div>
       <div class="subtitle" v-else>{{ key }}: {{ value || 'nenhum cadastrado' }}</div>
