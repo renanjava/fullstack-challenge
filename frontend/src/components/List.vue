@@ -1,7 +1,11 @@
 <template>
-  <div class="box" v-if="list.length > 0" v-for="(item, index) in list" :key="index">
+  <button v-if="!isLoaded" class="button is-loading my-custom-loader">Carregando lista...</button>
+  <div v-else-if="list.length > 0" class="box" v-for="(item, index) in list" :key="index">
     <div v-for="[key, value] in Object.entries(sanitizeItem(item))">
-      <div class="subtitle" v-if="isJsonLike(value)">{{ key }}: {{ sanitizeItem(value) }}</div>
+      <div class="subtitle" v-if="isJsonArray(value)">
+        {{ key }}: {{ value.map((v: any) => sanitizeItem(v)) }}
+      </div>
+      <div class="subtitle" v-else-if="isJsonLike(value)">{{ key }}: {{ sanitizeItem(value) }}</div>
       <div class="subtitle" v-else>{{ key }}: {{ value || 'nenhum cadastrado' }}</div>
     </div>
   </div>
@@ -13,11 +17,25 @@ import { defineComponent, type PropType } from 'vue'
 
 export default defineComponent({
   name: 'List',
+  data() {
+    return {
+      isLoaded: false,
+    }
+  },
+  watch: {
+    list: {
+      immediate: false,
+      handler(newVal) {
+        if (newVal && newVal.length >= 0) {
+          this.isLoaded = true
+        }
+      },
+    },
+  },
   props: {
     list: {
       type: Array as PropType<Array<Record<string, any>>>,
       required: true,
-      default: () => [],
     },
   },
   methods: {
@@ -37,6 +55,20 @@ export default defineComponent({
     isJsonLike(value: any): boolean {
       return typeof value === 'object' && value !== null && !Array.isArray(value)
     },
+    isJsonArray(value: any): boolean {
+      return (
+        Array.isArray(value) &&
+        value.every((item) => typeof item === 'object' && item !== null && !Array.isArray(item))
+      )
+    },
   },
 })
 </script>
+
+<style scoped>
+.my-custom-loader {
+  height: 50px;
+  width: 50px;
+  border-width: 5px;
+}
+</style>
