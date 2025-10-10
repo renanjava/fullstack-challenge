@@ -50,14 +50,12 @@ export default defineComponent({
           this.projectsList = this.projectsList.filter((project) => project.id != data.item.id)
           break
         case 'edit':
-          console.log({ dataevent: data.event })
           this.event = data.event
           this.projectNameModal = data.item.name
           this.projectIdModal = data.item.id
           this.showEditOrCreateModal = true
           break
         case 'create':
-          console.log({ dataevent: data.event })
           this.event = data.event
           this.projectIdModal = ''
           this.projectNameModal = ''

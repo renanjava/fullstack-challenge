@@ -9,6 +9,7 @@ import { TimeTrackersModule } from './modules/time-trackers/time-trackers.module
 import { AuthModule } from './auth/auth.module';
 import { APP_FILTER } from '@nestjs/core';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter'
     TasksModule,
     TimeTrackersModule,
     AuthModule,
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [AppController],
   providers: [

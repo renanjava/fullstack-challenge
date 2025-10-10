@@ -9,6 +9,7 @@ export default defineComponent({
   },
   data() {
     return {
+      username: '',
       todayHours: '0:01',
       monthlyHours: '0:01',
       activeTasks: 1,
@@ -19,6 +20,28 @@ export default defineComponent({
         { id: 3, name: 'Tarefa #3', project: 'Projeto Alpha', time: '1:30h', active: true },
       ],
       timerRunning: false,
+    }
+  },
+  async mounted() {
+    const token = localStorage.getItem('access_token')
+    if (!token) {
+      this.$router.push('/login')
+      return
+    }
+    try {
+      const res = await fetch('http://localhost:3000/auth/profile', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const resJson = await res.json()
+      if (!resJson.user_id) {
+        throw new Error('não foi possível encontrar nenhum usuário com esse token')
+      }
+
+      this.username = resJson.username
+    } catch (err) {
+      console.error('Token inválido:', err)
+      localStorage.removeItem('access_token')
+      this.$router.push('/login')
     }
   },
   methods: {
@@ -40,7 +63,10 @@ export default defineComponent({
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
 
-  <DefaultMain :primary-text="'Bem vindo!'" :second-text="'Visão geral do seu controle de tempo'">
+  <DefaultMain
+    :primary-text="`Bem vindo ${this.username}!`"
+    :second-text="'Visão geral do seu controle de tempo'"
+  >
     <div class="columns is-multiline mb-5">
       <div class="column is-3">
         <div class="card stats-card">

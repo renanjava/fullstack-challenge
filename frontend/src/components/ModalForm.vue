@@ -44,13 +44,8 @@ export default defineComponent({
   },
   methods: {
     async submitForms() {
-      console.log('oi')
-      console.log({ event: this.event })
-
       if (this.event === 'create') {
         const response = await postGenericEndPoint('projects', { name: this.formData })
-        console.log({ responsecreate: response })
-
         if (response.id) {
           this.$emit('updateListWithCreate', response)
         }
@@ -63,7 +58,6 @@ export default defineComponent({
           name: this.formData,
         })
         if (response.id) {
-          console.log({ response })
           this.$emit('updateListWithUpdate', response)
         }
       }

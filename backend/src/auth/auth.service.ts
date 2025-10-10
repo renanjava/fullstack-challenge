@@ -12,7 +12,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
-  async login(userLoginDto: UserLoginDto): Promise<{ access_token: string }> {
+  async login(userLoginDto: UserLoginDto): Promise<Record<string, any>> {
     const user = await this.usersService.findByUsernameAndReturnPassword(
       userLoginDto.username,
     );
@@ -26,6 +26,7 @@ export class AuthService {
     const payload = { sub: user.id, username: user.username };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      payload,
     };
   }
 
