@@ -25,6 +25,7 @@
               </a>
             </li>
           </ul>
+          <button class="button is-danger" @click="logoutButton">Logout</button>
         </aside>
       </div>
     </div>
@@ -40,6 +41,10 @@ export default defineComponent({
   methods: {
     redirectPage(page: string) {
       this.$router.push(page)
+    },
+    logoutButton() {
+      localStorage.removeItem('access_token')
+      this.$router.push('login')
     },
   },
   data() {
