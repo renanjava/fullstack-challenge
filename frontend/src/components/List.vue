@@ -31,10 +31,18 @@
             <button class="action-btn play-btn" @click="$emit('play', item)" title="Iniciar">
               <i class="fas fa-play"></i>
             </button>
-            <button class="action-btn edit-btn" @click="$emit('edit', item)" title="Editar">
+            <button
+              class="action-btn edit-btn"
+              @click="$emit('edit', { event: 'edit', item })"
+              title="Editar"
+            >
               <i class="fas fa-edit"></i>
             </button>
-            <button class="action-btn delete-btn" @click="$emit('delete', item)" title="Excluir">
+            <button
+              class="action-btn delete-btn"
+              @click="$emit('delete', { event: 'delete', item })"
+              title="Excluir"
+            >
               <i class="fas fa-trash"></i>
             </button>
           </div>
