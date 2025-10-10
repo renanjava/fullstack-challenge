@@ -1,5 +1,5 @@
 <template>
-  <main class="columns is-gapless is-multiline">
+  <main class="main-wrapper">
     <DefaultHeader :primaryText="primaryText" :secondaryText="secondText">
       <slot></slot>
     </DefaultHeader>
@@ -22,4 +22,10 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.main-wrapper {
+  min-height: 100vh;
+  background-color: #f8f9fa !important;
+  color-scheme: light !important;
+}
+</style>

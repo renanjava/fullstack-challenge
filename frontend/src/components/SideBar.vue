@@ -36,7 +36,7 @@ import { BarChart3, FolderKanban, LayoutDashboard, ListTodo, UserCog, Users } fr
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'BarraLateral',
+  name: 'SideBar',
   methods: {
     redirectPage(page: string) {
       this.$router.push(page)
@@ -137,8 +137,8 @@ export default defineComponent({
     padding: 2rem 1.5rem;
   }
 
-  .sidebar-custom {
-    min-height: 100vh;
+  .hero {
+    height: 50vh;
   }
 }
 </style>
