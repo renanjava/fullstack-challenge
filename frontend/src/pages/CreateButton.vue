@@ -1,6 +1,8 @@
 <template>
   <div class="buttons has-addons is-right">
-    <button class="button is-success mb-4">Criar novo {{ name }}</button>
+    <button class="button is-success mb-4" @click="$emit('openModal')">
+      Criar novo {{ name }}
+    </button>
   </div>
 </template>
 
@@ -9,6 +11,7 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'CreateButton',
+  emits: ['openModal'],
   props: {
     name: { type: String, required: true },
   },
