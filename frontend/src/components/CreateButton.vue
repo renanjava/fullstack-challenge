@@ -1,6 +1,6 @@
 <template>
   <div class="buttons has-addons is-right">
-    <button class="button is-success mb-4" @click="$emit('openModal')">
+    <button class="button is-success mb-4" @click="$emit('openModal', { event: 'create' })">
       Criar novo {{ name }}
     </button>
   </div>

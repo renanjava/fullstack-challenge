@@ -21,7 +21,7 @@ import DefaultMain from '@/components/DefaultMain.vue'
 import List from '@/components/List.vue'
 import type { IProjects } from '@/interfaces.ts/projects.interface'
 import { defineComponent } from 'vue'
-import CreateButton from './CreateButton.vue'
+import CreateButton from '../components/CreateButton.vue'
 import ModalForm from '@/components/ModalForm.vue'
 
 export default defineComponent({
@@ -44,6 +44,7 @@ export default defineComponent({
   },
   methods: {
     async crudOperation(data: Record<string, any>) {
+      console.log({ data })
       switch (data.event) {
         case 'delete':
           await deleteGenericEndPoint('projects', data.item.id)
@@ -72,7 +73,7 @@ export default defineComponent({
         if (project.id === data.id) {
           project.name = data.name
         }
-        return
+        return project
       })
       this.showEditOrCreateModal = false
     },
