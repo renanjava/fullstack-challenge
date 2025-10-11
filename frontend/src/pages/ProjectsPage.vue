@@ -1,13 +1,14 @@
 <template>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
   <DefaultMain :primary-text="'Projetos'" :second-text="'Organize seu trabalho em projetos'">
-    <CreateButton :name="name" @open-modal="handleCrudOperation" />
+    <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
     <List :list="projectsList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
       :class="{ 'is-active': showEditOrCreateModal }"
       :inputData="projectNameModal"
       :event="event"
       :optional-id-data="projectIdModal"
+      :entityName="entityName"
       @close-modal="showEditOrCreateModal = !showEditOrCreateModal"
       @update-list-with-create="updateListWithNewCreatedData"
       @update-list-with-update="updateListWithNewUpdatedData"
@@ -23,7 +24,7 @@ import CreateButton from '../components/CreateButton.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import { getGenericEndPoint } from '@/api/api'
 import { useCrudOperations } from '@/api/utils/crud-operations'
-import type { IProjects } from '@/interfaces.ts/projects.interface'
+import type { IProjects } from '@/interfaces/projects.interface'
 
 export default defineComponent({
   name: 'ProjectsPage',
@@ -34,7 +35,8 @@ export default defineComponent({
     const projectNameModal = ref('')
     const projectIdModal = ref('')
     const event = ref('')
-    const name = 'projeto'
+    const buttonName = 'Criar novo projeto'
+    const entityName = 'projects'
 
     const { handleCrudOperation } = useCrudOperations<IProjects>('projects', {
       listRef: projectsList,
@@ -73,7 +75,8 @@ export default defineComponent({
       projectNameModal,
       projectIdModal,
       event,
-      name,
+      buttonName,
+      entityName,
       handleCrudOperation,
       updateListWithNewCreatedData,
       updateListWithNewUpdatedData,

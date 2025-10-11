@@ -3,21 +3,35 @@
     <div class="modal-background"></div>
     <div class="modal-content">
       <form @submit.prevent="submitForms">
-        <div class="field">
-          <label class="label">Name</label>
-          <div class="control">
-            <input
-              class="input"
-              type="text"
-              placeholder="Digite o nome do projeto"
-              v-model="formData"
-              required
-            />
+        <div v-for="field in formData" :key="field.name" class="field">
+          <label class="label">{{ field.label }}</label>
+
+          <input
+            v-if="field.type !== 'textarea' && field.type !== 'select'"
+            :type="field.type"
+            v-model="formValues[field.name]"
+            :required="field.required"
+            class="input"
+          />
+
+          <textarea
+            v-else-if="field.type === 'textarea'"
+            v-model="formValues[field.name]"
+            :required="field.required"
+            class="textarea"
+          ></textarea>
+
+          <div v-else-if="field.type === 'select'" class="select is-fullwidth">
+            <select v-model="formValues[field.name]" :required="field.required">
+              <option disabled value="">Selecione uma opção</option>
+              <option v-for="option in field.options" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </option>
+            </select>
           </div>
         </div>
-        <div class="field">
-          <button class="button is-primary is-fullwidth" type="submit">Salvar</button>
-        </div>
+
+        <button class="button is-primary is-fullwidth" type="submit">Salvar</button>
       </form>
     </div>
     <button class="modal-close is-large" aria-label="close" @click="$emit('closeModal')"></button>
@@ -26,26 +40,35 @@
 
 <script lang="ts">
 import { patchGenericEndPoint, postGenericEndPoint } from '@/api/api'
+import { type IFields } from '@/interfaces/generic-fields.interface'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'ModalForm',
   emits: ['closeModal', 'updateListWithCreate', 'updateListWithUpdate'],
   props: {
-    inputData: { type: String, required: false },
+    inputData: { type: Array<IFields>, required: true },
+    formValuesFromComponent: { type: Object, required: false },
     optionalIdData: { type: String, required: false },
     event: { type: String, required: true },
+    entityName: { type: String, required: true },
   },
   data() {
     return {
       formData: this.inputData,
       idData: this.optionalIdData,
+      formValues: this.formValuesFromComponent,
     }
+  },
+  mounted() {
+    console.log({ formValues: this.formValues })
   },
   methods: {
     async submitForms() {
+      console.log({ formData: this.formData })
       if (this.event === 'create') {
-        const response = await postGenericEndPoint('projects', { name: this.formData })
+        const response = await postGenericEndPoint(this.entityName, this.formValues)
+        console.log({ response })
         if (response.id) {
           this.$emit('updateListWithCreate', response)
         }
@@ -54,7 +77,7 @@ export default defineComponent({
         if (!this.idData) {
           throw Error('Id para atualizar não foi informado')
         }
-        const response = await patchGenericEndPoint('projects', this.idData, {
+        const response = await patchGenericEndPoint(this.entityName, this.idData, {
           name: this.formData,
         })
         if (response.id) {
@@ -65,6 +88,7 @@ export default defineComponent({
   },
   watch: {
     inputData(newValue) {
+      console.log('atualizou')
       this.formData = newValue
     },
 

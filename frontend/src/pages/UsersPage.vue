@@ -9,7 +9,7 @@
 import { getGenericEndPoint } from '@/api/api'
 import DefaultMain from '@/components/DefaultMain.vue'
 import List from '@/components/List.vue'
-import type { IUsers } from '@/interfaces.ts/users.interface'
+import type { IUsers } from '@/interfaces/users.interface'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
