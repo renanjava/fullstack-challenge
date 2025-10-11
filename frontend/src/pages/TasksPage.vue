@@ -2,7 +2,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
   <DefaultMain :primary-text="'Tarefas'" :second-text="'Gerencie e acompanhe suas tarefas'">
     <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
-    <List :list="tasksList" />
+    <List :list="tasksList" @edit="handleCrudOperation" />
     <ModalForm
       :class="{ 'is-active': showEditOrCreateModal }"
       :inputData="taskJsonModal"
@@ -67,6 +67,7 @@ export default defineComponent({
         event.value = 'edit'
         taskJsonModal.value[0].editValue = item.name
         taskJsonModal.value[1].editValue = item.description
+        taskJsonModal.value.splice(2, 1)
         taskIdModal.value = item.id
         showEditOrCreateModal.value = true
       },
@@ -84,7 +85,10 @@ export default defineComponent({
 
     const updateListWithNewUpdatedData = (data: ITasks) => {
       const index = tasksList.value.findIndex((p: ITasks) => p.id === data.id)
-      if (index !== -1) tasksList.value[index].name = data.name
+      if (index !== -1) {
+        tasksList.value[index].name = data.name
+        tasksList.value[index].description = data.description
+      }
       showEditOrCreateModal.value = false
     }
 

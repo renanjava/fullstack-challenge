@@ -47,39 +47,44 @@ export default defineComponent({
   name: 'ModalForm',
   emits: ['closeModal', 'updateListWithCreate', 'updateListWithUpdate'],
   props: {
-    inputData: { type: Array<IFields>, required: true },
-    formValuesFromComponent: { type: Object, required: false },
+    inputData: { type: Array as () => IFields[], required: true },
     optionalIdData: { type: String, required: false },
     event: { type: String, required: true },
     entityName: { type: String, required: true },
   },
   data() {
     return {
-      formData: this.inputData,
+      formData: [] as IFields[],
       idData: this.optionalIdData,
-      formValues: this.formValuesFromComponent,
+      formValues: {} as Record<string, any>,
     }
   },
   mounted() {
-    console.log({ formValues: this.formValues })
+    this.initializeForm()
   },
   methods: {
+    initializeForm() {
+      this.formData = [...this.inputData]
+      this.formValues = {}
+
+      this.formData.forEach((field) => {
+        this.formValues[field.name] = field.editValue ?? ''
+      })
+    },
+
     async submitForms() {
-      console.log({ formData: this.formData })
       if (this.event === 'create') {
         const response = await postGenericEndPoint(this.entityName, this.formValues)
-        console.log({ response })
         if (response.id) {
           this.$emit('updateListWithCreate', response)
         }
       }
       if (this.event === 'edit') {
         if (!this.idData) {
-          throw Error('Id para atualizar não foi informado')
+          throw new Error('Id para atualizar não foi informado')
         }
-        const response = await patchGenericEndPoint(this.entityName, this.idData, {
-          name: this.formData,
-        })
+
+        const response = await patchGenericEndPoint(this.entityName, this.idData, this.formValues)
         if (response.id) {
           this.$emit('updateListWithUpdate', response)
         }
@@ -87,16 +92,15 @@ export default defineComponent({
     },
   },
   watch: {
-    inputData(newValue) {
-      console.log('atualizou')
-      this.formData = newValue
+    inputData: {
+      handler() {
+        this.initializeForm()
+      },
+      deep: true,
     },
-
     optionalIdData(newValue) {
       this.idData = newValue
     },
   },
 })
 </script>
-
-<style></style>
