@@ -1,17 +1,21 @@
 <template>
   <div class="box formulario">
     <div class="columns">
-      <div class="column is-8" role="form" aria-label="Formulário para criação de uma nova tarefa">
+      <div
+        class="column is-8"
+        role="form"
+        aria-label="Formulário para criação do timer de uma tarefa"
+      >
         <div class="select is-fullwidth">
           <select v-model="selectTask" :required="true">
-            <option disabled value="">Selecione uma opção</option>
+            <option disabled value="">Selecione uma tarefa</option>
             <option v-for="task in nameList" :key="task.value" :value="task.value">
               {{ task.label }}
             </option>
           </select>
         </div>
         <div class="column">
-          <Timer @to-timer-finished="finishTask" />
+          <Timer @to-timer-finished="finishTask" :task-selected="!!selectTask" />
         </div>
       </div>
     </div>
@@ -21,6 +25,7 @@
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue'
 import Timer from './Timer.vue'
+import { postGenericEndPoint } from '@/api/api'
 
 export default defineComponent({
   name: 'TimeTrackerForm',
@@ -42,12 +47,16 @@ export default defineComponent({
     taskNameList: { type: Array as PropType<Array<{ label: string; value: string }>> },
   },
   methods: {
-    finishTask(totalTime: number): void {
-      const tarefa = {
-        secondsDuration: totalTime,
-        taskId: this.selectTask,
+    async finishTask(totalTime: Record<string, any>) {
+      const createTaskPayload = {
+        ...totalTime,
+        task_id: this.selectTask,
       }
-      this.$emit('submitTarefa', tarefa)
+
+      const response = await postGenericEndPoint('time-trackers', createTaskPayload)
+      console.log({ response_time_tracker: response })
+
+      this.$emit('submitTarefa', createTaskPayload)
     },
   },
 })

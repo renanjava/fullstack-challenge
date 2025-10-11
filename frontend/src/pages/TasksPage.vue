@@ -1,7 +1,11 @@
 <template>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
   <DefaultMain :primary-text="'Tarefas'" :second-text="'Gerencie e acompanhe suas tarefas'">
-    <TimeTrackerForm v-if="tasksList.length > 0" :task-name-list="taskNameList" />
+    <TimeTrackerForm
+      v-if="tasksList.length > 0"
+      :task-name-list="taskNameList"
+      @submit-tarefa="submitTimeTrackerForm"
+    />
     <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
     <List :list="tasksList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
@@ -101,6 +105,10 @@ export default defineComponent({
       taskJsonModal.value[1].editValue = ''
     }
 
+    const submitTimeTrackerForm = (data: any) => {
+      console.log({ data })
+    }
+
     onMounted(async () => {
       tasksList.value = await getGenericEndPoint('tasks')
       getProjects.value = await getGenericEndPoint('projects')
@@ -131,6 +139,7 @@ export default defineComponent({
       closeModalAndClearEditForm,
       updateListWithNewCreatedData,
       updateListWithNewUpdatedData,
+      submitTimeTrackerForm,
     }
   },
 })

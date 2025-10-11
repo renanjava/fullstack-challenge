@@ -1,7 +1,7 @@
 <template>
   <div class="is-flex is-align-items-center is-justify-content-space-between">
     <StopWatch :time-in-seconds="tempoEmSegundos" />
-    <button class="button" @click="iniciar()" :disabled="cronometroRodando">
+    <button class="button" @click="iniciar()" :disabled="cronometroRodando || !taskSelected">
       <span class="icon">
         <i class="fas fa-play"></i>
       </span>
@@ -28,22 +28,35 @@ export default defineComponent({
       tempoEmSegundos: 0,
       cronometro: 0,
       cronometroRodando: false,
+      startDate: null as Date | null,
+      endDate: null as Date | null,
+      timezoneId: '',
     }
+  },
+  props: {
+    taskSelected: { type: Boolean, default: false },
   },
   components: {
     StopWatch,
   },
   methods: {
     iniciar() {
+      this.timezoneId = Intl.DateTimeFormat().resolvedOptions().timeZone
+      this.startDate = new Date()
       this.cronometro = setInterval(() => {
         this.tempoEmSegundos += 1
       }, 1000)
       this.cronometroRodando = true
     },
     finalizar() {
+      this.endDate = new Date()
       clearInterval(this.cronometro)
       this.cronometroRodando = false
-      this.$emit('toTimerFinished', this.tempoEmSegundos)
+      this.$emit('toTimerFinished', {
+        start_date: this.startDate?.toISOString(),
+        end_date: this.endDate.toISOString(),
+        timezone_id: this.timezoneId,
+      })
       this.tempoEmSegundos = 0
     },
   },
