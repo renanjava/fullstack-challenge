@@ -1,4 +1,5 @@
 <script lang="ts">
+import { getGenericEndPoint } from '@/api/api'
 import DefaultMain from '@/components/DefaultMain.vue'
 import { defineComponent } from 'vue'
 
@@ -10,14 +11,23 @@ export default defineComponent({
   data() {
     return {
       username: '',
-      todayHours: '0:01',
-      monthlyHours: '0:01',
+      todayHours: '0:00',
+      monthlyHours: '0:00',
       recentActivities: [
         { id: 1, name: 'Tarefa #1', project: 'Projeto Alpha', time: '1:30h', active: true },
         { id: 2, name: 'Tarefa #2', project: 'Projeto Alpha', time: '1:30h', active: true },
         { id: 3, name: 'Tarefa #3', project: 'Projeto Alpha', time: '1:30h', active: true },
       ],
     }
+  },
+  methods: {
+    hoursToHHMM(hours: any) {
+      const totalMinutes = hours * 60
+      const h = Math.floor(totalMinutes / 60)
+      const m = Math.floor(totalMinutes % 60)
+      const s = Math.round((totalMinutes % 1) * 60)
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+    },
   },
   async mounted() {
     const token = localStorage.getItem('access_token')
@@ -40,6 +50,21 @@ export default defineComponent({
       localStorage.removeItem('access_token')
       this.$router.push('/login')
     }
+
+    const payloadDay = new Date().toISOString().split('T')[0]
+    const responseDay = await getGenericEndPoint(`time-trackers/day/${payloadDay}`)
+    this.todayHours = this.hoursToHHMM(responseDay[0].hours_in_day)
+
+    const payloadMonth = new Date().toISOString().split('T')[0]
+    const responseMonth = await getGenericEndPoint(`time-trackers/month/${payloadDay}`)
+    this.monthlyHours = this.hoursToHHMM(responseMonth[0].hours_in_month)
+
+    console.log(`time-trackers/day/${payloadDay}`)
+    console.log({ todayHours: this.todayHours })
+    console.log(responseDay[0].hours_in_day)
+    console.log(`time-trackers/month/${payloadMonth}`)
+    console.log({ monthlyHours: this.monthlyHours })
+    console.log(responseMonth[0].hours_in_month)
   },
 })
 </script>
