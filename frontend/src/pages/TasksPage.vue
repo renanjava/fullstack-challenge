@@ -4,6 +4,7 @@
     <TimeTrackerForm
       v-if="tasksList.length > 0"
       :task-name-list="taskNameList"
+      :collaborator-list="collaboratorsNameList"
       @submit-tarefa="submitTimeTrackerForm"
     />
     <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
@@ -32,6 +33,7 @@ import { computed, defineComponent, onMounted, ref } from 'vue'
 import ModalForm from '@/components/ModalForm.vue'
 import type { IProjects } from '@/interfaces/projects.interface'
 import TimeTrackerForm from '@/components/TimeTrackerForm.vue'
+import type { ICollaborators } from '@/interfaces/collaborators.interface'
 
 export default defineComponent({
   name: 'TasksPage',
@@ -67,6 +69,7 @@ export default defineComponent({
     const buttonName = 'Criar nova tarefa'
     const entityName = 'tasks'
     const getProjects = ref([] as IProjects[])
+    const getCollaborators = ref([] as ICollaborators[])
 
     const { handleCrudOperation } = useCrudOperations<ITasks>('tasks', {
       listRef: tasksList,
@@ -88,6 +91,13 @@ export default defineComponent({
       return tasksList.value.map((task) => ({
         label: task.name,
         value: task.id,
+      }))
+    })
+
+    const collaboratorsNameList = computed(() => {
+      return getCollaborators.value.map((collaborator) => ({
+        label: collaborator.name,
+        value: collaborator.id,
       }))
     })
 
@@ -118,6 +128,7 @@ export default defineComponent({
     onMounted(async () => {
       tasksList.value = await getGenericEndPoint('tasks')
       getProjects.value = await getGenericEndPoint('projects')
+      getCollaborators.value = await getGenericEndPoint('collaborators')
       taskJsonModal.value[2].options = getProjects.value.map((project) => {
         return {
           label: project.name,
@@ -141,6 +152,8 @@ export default defineComponent({
       event,
       buttonName,
       entityName,
+      getCollaborators,
+      collaboratorsNameList,
       handleCrudOperation,
       closeModalAndClearEditForm,
       updateListWithNewCreatedData,
