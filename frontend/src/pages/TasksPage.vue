@@ -9,7 +9,7 @@
       :event="event"
       :entityName="entityName"
       :optional-id-data="taskIdModal"
-      @close-modal="showEditOrCreateModal = !showEditOrCreateModal"
+      @close-modal="closeModalAndClearEditForm"
       @update-list-with-create="updateListWithNewCreatedData"
       @update-list-with-update="updateListWithNewUpdatedData"
     />
@@ -26,6 +26,7 @@ import List from '@/components/List.vue'
 import type { ITasks } from '@/interfaces/tasks.interface'
 import { defineComponent, onMounted, ref } from 'vue'
 import ModalForm from '@/components/ModalForm.vue'
+import type { IProjects } from '@/interfaces/projects.interface'
 
 export default defineComponent({
   name: 'TasksPage',
@@ -60,6 +61,7 @@ export default defineComponent({
     const event = ref('')
     const buttonName = 'Criar nova tarefa'
     const entityName = 'tasks'
+    const getProjects = ref([] as IProjects[])
 
     const { handleCrudOperation } = useCrudOperations<ITasks>('tasks', {
       listRef: tasksList,
@@ -67,7 +69,6 @@ export default defineComponent({
         event.value = 'edit'
         taskJsonModal.value[0].editValue = item.name
         taskJsonModal.value[1].editValue = item.description
-        taskJsonModal.value.splice(2, 1)
         taskIdModal.value = item.id
         showEditOrCreateModal.value = true
       },
@@ -89,13 +90,19 @@ export default defineComponent({
         tasksList.value[index].name = data.name
         tasksList.value[index].description = data.description
       }
-      showEditOrCreateModal.value = false
+      closeModalAndClearEditForm()
+    }
+
+    const closeModalAndClearEditForm = () => {
+      showEditOrCreateModal.value = !showEditOrCreateModal.value
+      taskJsonModal.value[0].editValue = ''
+      taskJsonModal.value[1].editValue = ''
     }
 
     onMounted(async () => {
       tasksList.value = await getGenericEndPoint('tasks')
-      const getProjects = await getGenericEndPoint('projects')
-      taskJsonModal.value[2].options = getProjects.map((project) => {
+      getProjects.value = await getGenericEndPoint('projects')
+      taskJsonModal.value[2].options = getProjects.value.map((project) => {
         return {
           label: project.name,
           value: project.id,
@@ -113,6 +120,7 @@ export default defineComponent({
       entityName,
       formValuesFromComponent,
       handleCrudOperation,
+      closeModalAndClearEditForm,
       updateListWithNewCreatedData,
       updateListWithNewUpdatedData,
     }

@@ -21,7 +21,7 @@
             class="textarea"
           ></textarea>
 
-          <div v-else-if="field.type === 'select'" class="select is-fullwidth">
+          <div v-else-if="field.type === 'select' && event != 'edit'" class="select is-fullwidth">
             <select v-model="formValues[field.name]" :required="field.required">
               <option disabled value="">Selecione uma opção</option>
               <option v-for="option in field.options" :key="option.value" :value="option.value">
@@ -84,7 +84,21 @@ export default defineComponent({
           throw new Error('Id para atualizar não foi informado')
         }
 
-        const response = await patchGenericEndPoint(this.entityName, this.idData, this.formValues)
+        console.log({
+          entityName: this.entityName,
+          idData: this.idData,
+          formValues: this.formValues,
+        })
+
+        const { project_id, ...formValuesWithoutProjectId } = this.formValues
+
+        const response = await patchGenericEndPoint(
+          this.entityName,
+          this.idData,
+          formValuesWithoutProjectId,
+        )
+        console.log({ response })
+
         if (response.id) {
           this.$emit('updateListWithUpdate', response)
         }
