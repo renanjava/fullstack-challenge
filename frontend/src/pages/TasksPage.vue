@@ -2,7 +2,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
   <DefaultMain :primary-text="'Tarefas'" :second-text="'Gerencie e acompanhe suas tarefas'">
     <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
-    <List :list="tasksList" @edit="handleCrudOperation" />
+    <List :list="tasksList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
       :class="{ 'is-active': showEditOrCreateModal }"
       :inputData="taskJsonModal"
@@ -52,7 +52,7 @@ export default defineComponent({
         name: 'project_id',
         label: 'Nome do Projeto',
         type: 'select',
-        required: false,
+        required: true,
         options: [],
       },
     ])
