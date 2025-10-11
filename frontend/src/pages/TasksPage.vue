@@ -13,7 +13,6 @@
       @update-list-with-create="updateListWithNewCreatedData"
       @update-list-with-update="updateListWithNewUpdatedData"
     />
-    />
   </DefaultMain>
 </template>
 

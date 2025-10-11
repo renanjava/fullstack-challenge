@@ -84,12 +84,6 @@ export default defineComponent({
           throw new Error('Id para atualizar não foi informado')
         }
 
-        console.log({
-          entityName: this.entityName,
-          idData: this.idData,
-          formValues: this.formValues,
-        })
-
         const { project_id, ...formValuesWithoutProjectId } = this.formValues
 
         const response = await patchGenericEndPoint(
@@ -97,7 +91,6 @@ export default defineComponent({
           this.idData,
           formValuesWithoutProjectId,
         )
-        console.log({ response })
 
         if (response.id) {
           this.$emit('updateListWithUpdate', response)
