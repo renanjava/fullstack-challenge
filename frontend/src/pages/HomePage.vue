@@ -12,14 +12,11 @@ export default defineComponent({
       username: '',
       todayHours: '0:01',
       monthlyHours: '0:01',
-      activeTasks: 1,
-      productivity: 95,
       recentActivities: [
         { id: 1, name: 'Tarefa #1', project: 'Projeto Alpha', time: '1:30h', active: true },
         { id: 2, name: 'Tarefa #2', project: 'Projeto Alpha', time: '1:30h', active: true },
         { id: 3, name: 'Tarefa #3', project: 'Projeto Alpha', time: '1:30h', active: true },
       ],
-      timerRunning: false,
     }
   },
   async mounted() {
@@ -43,15 +40,6 @@ export default defineComponent({
       localStorage.removeItem('access_token')
       this.$router.push('/login')
     }
-  },
-  methods: {
-    startTimer() {
-      this.timerRunning = true
-      // Lógica para iniciar o timer
-    },
-    createNewTask() {
-      // Lógica para criar nova tarefa
-    },
   },
 })
 </script>
@@ -113,52 +101,6 @@ export default defineComponent({
           </div>
         </div>
       </div>
-
-      <div class="column is-3">
-        <div class="card stats-card">
-          <div class="card-content">
-            <div class="level is-mobile mb-2">
-              <div class="level-left">
-                <div class="level-item">
-                  <p class="heading has-text-grey">Tarefas Ativas</p>
-                </div>
-              </div>
-              <div class="level-right">
-                <div class="level-item">
-                  <span class="icon-circle purple-light-bg">
-                    <i class="fas fa-play"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <p class="title is-3 mb-1">{{ activeTasks }}</p>
-            <p class="subtitle is-7 has-text-grey">Tarefas em progresso</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="column is-3">
-        <div class="card stats-card">
-          <div class="card-content">
-            <div class="level is-mobile mb-2">
-              <div class="level-left">
-                <div class="level-item">
-                  <p class="heading has-text-grey">Produtividade</p>
-                </div>
-              </div>
-              <div class="level-right">
-                <div class="level-item">
-                  <span class="icon-circle green-light-bg">
-                    <i class="fas fa-chart-line"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <p class="title is-3 mb-1">{{ productivity }}%</p>
-            <p class="subtitle is-7 has-text-grey">Acima da meta</p>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="columns">
@@ -187,39 +129,6 @@ export default defineComponent({
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="column is-6">
-        <div class="card">
-          <div class="card-content">
-            <h2 class="title is-5 mb-4">Ações Rápidas</h2>
-
-            <div class="columns is-mobile">
-              <div class="column is-8">
-                <button
-                  class="button is-primary is-fullwidth is-large quick-action-btn"
-                  @click="startTimer"
-                >
-                  <span class="icon">
-                    <i class="fas fa-clock"></i>
-                  </span>
-                  <span>Iniciar Timer</span>
-                </button>
-              </div>
-              <div class="column is-4">
-                <button
-                  class="button is-light is-fullwidth is-large quick-action-btn"
-                  @click="createNewTask"
-                >
-                  <span class="icon">
-                    <i class="fas fa-play"></i>
-                  </span>
-                  <span>Nova Tarefa</span>
-                </button>
               </div>
             </div>
           </div>
