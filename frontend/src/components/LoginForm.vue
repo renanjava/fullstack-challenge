@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { loginEndPoint } from '../api'
+import { loginEndPoint } from '../api/api'
 
 export default defineComponent({
   name: 'LoginForm',

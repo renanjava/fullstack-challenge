@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { patchGenericEndPoint, postGenericEndPoint } from '@/api'
+import { patchGenericEndPoint, postGenericEndPoint } from '@/api/api'
 import { defineComponent } from 'vue'
 
 export default defineComponent({

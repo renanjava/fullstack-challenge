@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { getGenericEndPoint } from '@/api'
+import { getGenericEndPoint } from '@/api/api'
 import DefaultMain from '@/components/DefaultMain.vue'
 import List from '@/components/List.vue'
 import type { ICollaborators } from '@/interfaces.ts/collaborators.interface'

@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { getGenericEndPoint } from '@/api'
+import { getGenericEndPoint } from '@/api/api'
 import DefaultMain from '@/components/DefaultMain.vue'
 import List from '@/components/List.vue'
 import type { ITasks } from '@/interfaces.ts/tasks.interface'

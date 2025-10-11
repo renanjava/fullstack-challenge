@@ -1,8 +1,8 @@
 <template>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
   <DefaultMain :primary-text="'Projetos'" :second-text="'Organize seu trabalho em projetos'">
-    <CreateButton :name="name" @open-modal="crudOperation" />
-    <List :list="projectsList" @edit="crudOperation" @delete="crudOperation" />
+    <CreateButton :name="name" @open-modal="handleCrudOperation" />
+    <List :list="projectsList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
       :class="{ 'is-active': showEditOrCreateModal }"
       :inputData="projectNameModal"
@@ -16,70 +16,68 @@
 </template>
 
 <script lang="ts">
-import { deleteGenericEndPoint, getGenericEndPoint } from '@/api'
+import { defineComponent, ref, onMounted } from 'vue'
 import DefaultMain from '@/components/DefaultMain.vue'
 import List from '@/components/List.vue'
-import type { IProjects } from '@/interfaces.ts/projects.interface'
-import { defineComponent } from 'vue'
 import CreateButton from '../components/CreateButton.vue'
 import ModalForm from '@/components/ModalForm.vue'
+import { getGenericEndPoint } from '@/api/api'
+import { useCrudOperations } from '@/api/utils/crud-operations'
+import type { IProjects } from '@/interfaces.ts/projects.interface'
 
 export default defineComponent({
   name: 'ProjectsPage',
-  components: {
-    DefaultMain,
-    List,
-    CreateButton,
-    ModalForm,
-  },
-  data() {
-    return {
-      projectsList: [] as IProjects[],
-      name: 'projeto',
-      showEditOrCreateModal: false,
-      projectNameModal: '',
-      projectIdModal: '',
-      event: '',
+  components: { DefaultMain, List, CreateButton, ModalForm },
+  setup() {
+    const projectsList = ref<IProjects[]>([])
+    const showEditOrCreateModal = ref(false)
+    const projectNameModal = ref('')
+    const projectIdModal = ref('')
+    const event = ref('')
+    const name = 'projeto'
+
+    const { handleCrudOperation } = useCrudOperations<IProjects>('projects', {
+      listRef: projectsList,
+      onEdit: (item) => {
+        event.value = 'edit'
+        projectNameModal.value = item.name
+        projectIdModal.value = item.id
+        showEditOrCreateModal.value = true
+      },
+      onCreate: () => {
+        event.value = 'create'
+        projectIdModal.value = ''
+        projectNameModal.value = ''
+        showEditOrCreateModal.value = true
+      },
+    })
+
+    const updateListWithNewCreatedData = (data: IProjects) => {
+      projectsList.value.push(data)
+      showEditOrCreateModal.value = false
     }
-  },
-  methods: {
-    async crudOperation(data: Record<string, any>) {
-      console.log({ data })
-      switch (data.event) {
-        case 'delete':
-          await deleteGenericEndPoint('projects', data.item.id)
-          this.projectsList = this.projectsList.filter((project) => project.id != data.item.id)
-          break
-        case 'edit':
-          this.event = data.event
-          this.projectNameModal = data.item.name
-          this.projectIdModal = data.item.id
-          this.showEditOrCreateModal = true
-          break
-        case 'create':
-          this.event = data.event
-          this.projectIdModal = ''
-          this.projectNameModal = ''
-          this.showEditOrCreateModal = true
-          break
-      }
-    },
-    updateListWithNewCreatedData(data: IProjects) {
-      this.projectsList.push(data)
-      this.showEditOrCreateModal = false
-    },
-    updateListWithNewUpdatedData(data: IProjects) {
-      this.projectsList = this.projectsList.filter((project) => {
-        if (project.id === data.id) {
-          project.name = data.name
-        }
-        return project
-      })
-      this.showEditOrCreateModal = false
-    },
-  },
-  async created() {
-    this.projectsList = await getGenericEndPoint('projects')
+
+    const updateListWithNewUpdatedData = (data: IProjects) => {
+      const index = projectsList.value.findIndex((p) => p.id === data.id)
+      if (index !== -1) projectsList.value[index].name = data.name
+      showEditOrCreateModal.value = false
+    }
+
+    onMounted(async () => {
+      projectsList.value = await getGenericEndPoint('projects')
+    })
+
+    return {
+      projectsList,
+      showEditOrCreateModal,
+      projectNameModal,
+      projectIdModal,
+      event,
+      name,
+      handleCrudOperation,
+      updateListWithNewCreatedData,
+      updateListWithNewUpdatedData,
+    }
   },
 })
 </script>

@@ -36,7 +36,7 @@ export default defineComponent({
       if (!resJson.user_id) {
         throw new Error('não foi possível encontrar nenhum usuário com esse token')
       }
-      
+
       this.username = resJson.username
     } catch (err) {
       console.error('Token inválido:', err)
