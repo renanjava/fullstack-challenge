@@ -55,7 +55,6 @@ export default defineComponent({
         options: [],
       },
     ])
-    const formValuesFromComponent = ref('')
     const taskIdModal = ref('')
     const event = ref('')
     const buttonName = 'Criar nova tarefa'
@@ -117,7 +116,6 @@ export default defineComponent({
       event,
       buttonName,
       entityName,
-      formValuesFromComponent,
       handleCrudOperation,
       closeModalAndClearEditForm,
       updateListWithNewCreatedData,

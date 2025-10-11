@@ -5,11 +5,11 @@
     <List :list="projectsList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
       :class="{ 'is-active': showEditOrCreateModal }"
-      :inputData="projectNameModal"
+      :inputData="projectJsonModal"
       :event="event"
-      :optional-id-data="projectIdModal"
       :entityName="entityName"
-      @close-modal="showEditOrCreateModal = !showEditOrCreateModal"
+      :optional-id-data="projectIdModal"
+      @close-modal="closeModalAndClearEditForm"
       @update-list-with-create="updateListWithNewCreatedData"
       @update-list-with-update="updateListWithNewUpdatedData"
     />
@@ -32,7 +32,9 @@ export default defineComponent({
   setup() {
     const projectsList = ref<IProjects[]>([])
     const showEditOrCreateModal = ref(false)
-    const projectNameModal = ref('')
+    const projectJsonModal = ref([
+      { name: 'name', label: 'Nome do projeto', type: 'text', required: true, editValue: '' },
+    ])
     const projectIdModal = ref('')
     const event = ref('')
     const buttonName = 'Criar novo projeto'
@@ -42,14 +44,14 @@ export default defineComponent({
       listRef: projectsList,
       onEdit: (item) => {
         event.value = 'edit'
-        projectNameModal.value = item.name
+        projectJsonModal.value[0].editValue = item.name
         projectIdModal.value = item.id
         showEditOrCreateModal.value = true
       },
       onCreate: () => {
         event.value = 'create'
         projectIdModal.value = ''
-        projectNameModal.value = ''
+        projectJsonModal.value[0].editValue = ''
         showEditOrCreateModal.value = true
       },
     })
@@ -69,14 +71,20 @@ export default defineComponent({
       projectsList.value = await getGenericEndPoint('projects')
     })
 
+    const closeModalAndClearEditForm = () => {
+      showEditOrCreateModal.value = !showEditOrCreateModal.value
+      projectJsonModal.value[0].editValue = ''
+    }
+
     return {
       projectsList,
       showEditOrCreateModal,
-      projectNameModal,
+      projectJsonModal,
       projectIdModal,
       event,
       buttonName,
       entityName,
+      closeModalAndClearEditForm,
       handleCrudOperation,
       updateListWithNewCreatedData,
       updateListWithNewUpdatedData,
