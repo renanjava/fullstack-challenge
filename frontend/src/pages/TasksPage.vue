@@ -7,6 +7,7 @@
       :collaborator-list="collaboratorsNameList"
       @submit-tarefa="submitTimeTrackerForm"
     />
+    <Filter />
     <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
     <List :list="tasksList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
@@ -34,6 +35,7 @@ import ModalForm from '@/components/ModalForm.vue'
 import type { IProjects } from '@/interfaces/projects.interface'
 import TimeTrackerForm from '@/components/TimeTrackerForm.vue'
 import type { ICollaborators } from '@/interfaces/collaborators.interface'
+import Filter from '@/components/Filter.vue'
 
 export default defineComponent({
   name: 'TasksPage',
@@ -43,6 +45,7 @@ export default defineComponent({
     CreateButton,
     ModalForm,
     TimeTrackerForm,
+    Filter,
   },
   setup() {
     const tasksList = ref<ITasks[]>([])

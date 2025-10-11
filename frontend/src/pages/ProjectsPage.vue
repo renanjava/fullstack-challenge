@@ -2,20 +2,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
   <DefaultMain :primary-text="'Projetos'" :second-text="'Organize seu trabalho em projetos'">
     <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
-    <!--
-    <div class="date-selector">
-      <label class="selector-label">Período do Tempo</label>
-      <div class="select">
-        <select>
-          <option value="today">Hoje</option>
-          <option value="week">Esta Semana</option>
-          <option value="month">Este Mês</option>
-          <option value="year">Este Ano</option>
-          <option value="custom">Personalizado</option>
-        </select>
-      </div>
-    </div>
-    -->
     <List :list="projectsList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
       :class="{ 'is-active': showEditOrCreateModal }"
