@@ -1,6 +1,7 @@
 <template>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
   <DefaultMain :primary-text="'Tarefas'" :second-text="'Gerencie e acompanhe suas tarefas'">
+    <TimeTrackerForm v-if="tasksList.length > 0" :task-name-list="taskNameList" />
     <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
     <List :list="tasksList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
@@ -26,6 +27,7 @@ import type { ITasks } from '@/interfaces/tasks.interface'
 import { defineComponent, onMounted, ref } from 'vue'
 import ModalForm from '@/components/ModalForm.vue'
 import type { IProjects } from '@/interfaces/projects.interface'
+import TimeTrackerForm from '@/components/TimeTrackerForm.vue'
 
 export default defineComponent({
   name: 'TasksPage',
@@ -34,6 +36,7 @@ export default defineComponent({
     List,
     CreateButton,
     ModalForm,
+    TimeTrackerForm,
   },
   setup() {
     const tasksList = ref<ITasks[]>([])
@@ -55,6 +58,7 @@ export default defineComponent({
         options: [],
       },
     ])
+    const taskNameList = ref([{}])
     const taskIdModal = ref('')
     const event = ref('')
     const buttonName = 'Criar nova tarefa'
@@ -106,6 +110,12 @@ export default defineComponent({
           value: project.id,
         }
       })
+      taskNameList.value = tasksList.value.map((task) => {
+        return {
+          label: task.name,
+          value: task.id,
+        }
+      })
     })
 
     return {
@@ -113,6 +123,7 @@ export default defineComponent({
       showEditOrCreateModal,
       taskJsonModal,
       taskIdModal,
+      taskNameList,
       event,
       buttonName,
       entityName,
