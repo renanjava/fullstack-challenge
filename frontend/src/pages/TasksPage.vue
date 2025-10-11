@@ -28,7 +28,7 @@ import DefaultMain from '@/components/DefaultMain.vue'
 import CreateButton from '@/components/CreateButton.vue'
 import List from '@/components/List.vue'
 import type { ITasks } from '@/interfaces/tasks.interface'
-import { defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import ModalForm from '@/components/ModalForm.vue'
 import type { IProjects } from '@/interfaces/projects.interface'
 import TimeTrackerForm from '@/components/TimeTrackerForm.vue'
@@ -62,7 +62,6 @@ export default defineComponent({
         options: [],
       },
     ])
-    const taskNameList = ref([{}])
     const taskIdModal = ref('')
     const event = ref('')
     const buttonName = 'Criar nova tarefa'
@@ -83,6 +82,13 @@ export default defineComponent({
         taskIdModal.value = ''
         showEditOrCreateModal.value = true
       },
+    })
+
+    const taskNameList = computed(() => {
+      return tasksList.value.map((task) => ({
+        label: task.name,
+        value: task.id,
+      }))
     })
 
     const updateListWithNewCreatedData = (data: ITasks) => {
