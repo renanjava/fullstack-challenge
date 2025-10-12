@@ -40,6 +40,48 @@ export class TimeTrackersController {
     );
   }
 
+  @Get('collaborator/:id/month/:date')
+  async getTimeTrackersFromMonthWhereCollaboratorId(
+    @Param()
+    getDateTimeTrackersDto: GetDateTimeTrackersDto,
+  ) {
+    return this.timeTrackersService.getTimeTrackersFromMonthWhereCollaboratorId(
+      getDateTimeTrackersDto.id,
+      getDateTimeTrackersDto.date,
+    );
+  }
+
+  @Get('collaborator/:id/day/:date')
+  async getTimeTrackersFromDayWhereCollaboratorId(
+    @Param() getDateTimeTrackersDto: GetDateTimeTrackersDto,
+  ) {
+    return this.timeTrackersService.getTimeTrackersFromDayWhereCollaboratorId(
+      getDateTimeTrackersDto.id,
+      getDateTimeTrackersDto.date,
+    );
+  }
+
+  @Get('project/:id/month/:date')
+  async getTimeTrackersFromMonthWhereProjectId(
+    @Param()
+    getDateTimeTrackersDto: GetDateTimeTrackersDto,
+  ) {
+    return await this.timeTrackersService.getTimeTrackersFromMonthWhereProjectId(
+      getDateTimeTrackersDto.id,
+      getDateTimeTrackersDto.date,
+    );
+  }
+
+  @Get('project/:id/day/:date')
+  async getTimeTrackersFromDayWhereProjectId(
+    @Param() getDateTimeTrackersDto: GetDateTimeTrackersDto,
+  ) {
+    return this.timeTrackersService.getTimeTrackersFromDayWhereProjectId(
+      getDateTimeTrackersDto.id,
+      getDateTimeTrackersDto.date,
+    );
+  }
+
   @Get('month/:date')
   async getTimeTrackersFromMonth(
     @Param() getDateTimeTrackersDto: GetDateTimeTrackersDto,

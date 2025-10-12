@@ -57,6 +57,26 @@ export class PrismaTimeTrackersRepository implements TimeTrackersRepository {
     `;
   }
 
+  async getTimeTrackersFromDayWhereCollaboratorId(
+    day: string,
+    collaboratorId: string,
+  ): Promise<Record<string, any>> {
+    return await this.prismaClient.$queryRaw`
+    SELECT
+      ${day} AS day,
+      SUM(
+        EXTRACT(
+          EPOCH FROM LEAST(t."EndDate", ${day}::date + INTERVAL '1 day') 
+          - GREATEST(t."StartDate", ${day}::date)
+        )
+      ) / 3600 AS hours_in_day
+    FROM "TimeTrackers" t
+    WHERE t."StartDate" < ${day}::date + INTERVAL '1 day'
+      AND t."EndDate"   > ${day}::date
+      AND t."collaborator_id" = ${collaboratorId};
+  `;
+  }
+
   async getTimeTrackersFromMonth(month: string): Promise<Record<string, any>> {
     return await this.prismaClient.$queryRaw`
       SELECT 
@@ -70,6 +90,80 @@ export class PrismaTimeTrackersRepository implements TimeTrackersRepository {
       WHERE t."StartDate" < DATE_TRUNC('month', ${month}::date) + INTERVAL '1 month'
         AND t."EndDate"   > DATE_TRUNC('month', ${month}::date);
     `;
+  }
+
+  async getTimeTrackersFromMonthWhereCollaboratorId(
+    month: string,
+    collaboratorId: string,
+  ): Promise<Record<string, any>> {
+    return await this.prismaClient.$queryRaw`
+    SELECT 
+      TO_CHAR(DATE_TRUNC('month', ${month}::date), 'YYYY-MM') AS month,
+      SUM(
+        EXTRACT(
+          EPOCH FROM LEAST(
+            t."EndDate", 
+            DATE_TRUNC('month', ${month}::date) + INTERVAL '1 month'
+          ) - GREATEST(
+            t."StartDate", 
+            DATE_TRUNC('month', ${month}::date)
+          )
+        )
+      ) / 3600 AS hours_in_month
+    FROM "TimeTrackers" t
+    WHERE t."StartDate" < DATE_TRUNC('month', ${month}::date) + INTERVAL '1 month'
+      AND t."EndDate"   > DATE_TRUNC('month', ${month}::date)
+      AND t."collaborator_id" = ${collaboratorId};
+  `;
+  }
+
+  async getTimeTrackersFromDayWhereProjectId(
+    day: string,
+    projectId: string,
+  ): Promise<Record<string, any>> {
+    return await this.prismaClient.$queryRaw`
+    SELECT
+      ${day} AS day,
+      SUM(
+        EXTRACT(
+          EPOCH FROM LEAST(t."EndDate", ${day}::date + INTERVAL '1 day') 
+          - GREATEST(t."StartDate", ${day}::date)
+        )
+      ) / 3600 AS hours_in_day
+    FROM "TimeTrackers" t
+    INNER JOIN "Tasks" ta ON ta."Id" = t."task_id"
+    INNER JOIN "Projects" p ON p."Id" = ta."project_id"
+    WHERE t."StartDate" < ${day}::date + INTERVAL '1 day'
+      AND t."EndDate" > ${day}::date
+      AND p."Id" = ${projectId};
+  `;
+  }
+
+  async getTimeTrackersFromMonthWhereProjectId(
+    month: string,
+    projectId: string,
+  ): Promise<Record<string, any>> {
+    return await this.prismaClient.$queryRaw`
+    SELECT 
+      TO_CHAR(DATE_TRUNC('month', ${month}::date), 'YYYY-MM') AS month,
+      SUM(
+        EXTRACT(
+          EPOCH FROM LEAST(
+            t."EndDate", 
+            DATE_TRUNC('month', ${month}::date) + INTERVAL '1 month'
+          ) - GREATEST(
+            t."StartDate", 
+            DATE_TRUNC('month', ${month}::date)
+          )
+        )
+      ) / 3600 AS hours_in_month
+    FROM "TimeTrackers" t
+    INNER JOIN "Tasks" ta ON ta."Id" = t."task_id"
+    INNER JOIN "Projects" p ON p."Id" = ta."project_id"
+    WHERE t."StartDate" < DATE_TRUNC('month', ${month}::date) + INTERVAL '1 month'
+      AND t."EndDate" > DATE_TRUNC('month', ${month}::date)
+      AND p."Id" = ${projectId};
+  `;
   }
 
   async update(

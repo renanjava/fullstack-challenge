@@ -5,6 +5,7 @@ import { TimeTrackersStub } from '../stubs/time-trackers.stub';
 import { mockTimeTrackersService } from '../mocks/time-trackers-service.mock';
 import { UpdateTimeTrackerDto } from '../dtos/update-time-tracker.dto';
 import { CreateTimeTrackerDto } from '../dtos/create-time-tracker.dto';
+import { GetDateTimeTrackersDto } from '../dtos/get-date-time-trackers.dto';
 
 describe('TimeTrackersController', () => {
   let controller: TimeTrackersController;
@@ -65,6 +66,100 @@ describe('TimeTrackersController', () => {
 
     expect(result).toEqual(timeTracker);
     expect(timeTrackersService.findOne).toHaveBeenCalledWith(timeTracker.id);
+  });
+
+  it('should get time trackers from day correctly', async () => {
+    const mockResult = { day: '2024-01-01', hours_in_day: 8 };
+    const dto = { date: '2024-01-01' } as GetDateTimeTrackersDto;
+    timeTrackersService.getTimeTrackersFromDay.mockResolvedValue(mockResult);
+    const result = await controller.getTimeTrackersFromDay(dto);
+
+    expect(result).toEqual(mockResult);
+    expect(timeTrackersService.getTimeTrackersFromDay).toHaveBeenCalledWith(
+      dto.date,
+    );
+  });
+
+  it('should get time trackers from month correctly', async () => {
+    const mockResult = { month: '2024-01', hours_in_month: 160 };
+    const dto = { date: '2024-01-01' } as GetDateTimeTrackersDto;
+    timeTrackersService.getTimeTrackersFromMonth.mockResolvedValue(mockResult);
+    const result = await controller.getTimeTrackersFromMonth(dto);
+
+    expect(result).toEqual(mockResult);
+    expect(timeTrackersService.getTimeTrackersFromMonth).toHaveBeenCalledWith(
+      dto.date,
+    );
+  });
+
+  it('should get time trackers from day where collaborator id correctly', async () => {
+    const mockResult = { day: '2024-01-01', hours_in_day: 8 };
+    const dto = {
+      id: 'collaborator-id',
+      date: '2024-01-01',
+    } as GetDateTimeTrackersDto;
+    timeTrackersService.getTimeTrackersFromDayWhereCollaboratorId.mockResolvedValue(
+      mockResult,
+    );
+    const result =
+      await controller.getTimeTrackersFromDayWhereCollaboratorId(dto);
+
+    expect(result).toEqual(mockResult);
+    expect(
+      timeTrackersService.getTimeTrackersFromDayWhereCollaboratorId,
+    ).toHaveBeenCalledWith(dto.id, dto.date);
+  });
+
+  it('should get time trackers from month where collaborator id correctly', async () => {
+    const mockResult = { month: '2024-01', hours_in_month: 160 };
+    const dto = {
+      id: 'collaborator-id',
+      date: '2024-01-01',
+    } as GetDateTimeTrackersDto;
+    timeTrackersService.getTimeTrackersFromMonthWhereCollaboratorId.mockResolvedValue(
+      mockResult,
+    );
+    const result =
+      await controller.getTimeTrackersFromMonthWhereCollaboratorId(dto);
+
+    expect(result).toEqual(mockResult);
+    expect(
+      timeTrackersService.getTimeTrackersFromMonthWhereCollaboratorId,
+    ).toHaveBeenCalledWith(dto.id, dto.date);
+  });
+
+  it('should get time trackers from day where project id correctly', async () => {
+    const mockResult = { day: '2024-01-01', hours_in_day: 8 };
+    const dto = {
+      id: 'project-id',
+      date: '2024-01-01',
+    } as GetDateTimeTrackersDto;
+    timeTrackersService.getTimeTrackersFromDayWhereProjectId.mockResolvedValue(
+      mockResult,
+    );
+    const result = await controller.getTimeTrackersFromDayWhereProjectId(dto);
+
+    expect(result).toEqual(mockResult);
+    expect(
+      timeTrackersService.getTimeTrackersFromDayWhereProjectId,
+    ).toHaveBeenCalledWith(dto.id, dto.date);
+  });
+
+  it('should get time trackers from month where project id correctly', async () => {
+    const mockResult = { month: '2024-01', hours_in_month: 160 };
+    const dto = {
+      id: 'project-id',
+      date: '2024-01-01',
+    } as GetDateTimeTrackersDto;
+    timeTrackersService.getTimeTrackersFromMonthWhereProjectId.mockResolvedValue(
+      mockResult,
+    );
+    const result = await controller.getTimeTrackersFromMonthWhereProjectId(dto);
+
+    expect(result).toEqual(mockResult);
+    expect(
+      timeTrackersService.getTimeTrackersFromMonthWhereProjectId,
+    ).toHaveBeenCalledWith(dto.id, dto.date);
   });
 
   it('should update timetracker correctly', async () => {

@@ -17,7 +17,23 @@ export abstract class TimeTrackersRepository {
     startDate: Date,
   ): Promise<ResponseTimeTrackerDto[]>;
   abstract getTimeTrackersFromDay(day: string): Promise<Record<string, any>>;
+  abstract getTimeTrackersFromDayWhereCollaboratorId(
+    day: string,
+    collaboratorId: string,
+  ): Promise<Record<string, any>>;
   abstract getTimeTrackersFromMonth(
     month: string,
+  ): Promise<Record<string, any>>;
+  abstract getTimeTrackersFromMonthWhereCollaboratorId(
+    month: string,
+    collaboratorId: string,
+  ): Promise<Record<string, any>>;
+  abstract getTimeTrackersFromMonthWhereProjectId(
+    month: string,
+    projectId: string,
+  ): Promise<Record<string, any>>;
+  abstract getTimeTrackersFromDayWhereProjectId(
+    month: string,
+    projectId: string,
   ): Promise<Record<string, any>>;
 }

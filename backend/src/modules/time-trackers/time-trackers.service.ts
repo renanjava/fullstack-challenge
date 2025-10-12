@@ -56,6 +56,43 @@ export class TimeTrackersService {
     return await this.timeTrackersRepository.getTimeTrackersFromMonth(month);
   }
 
+  async getTimeTrackersFromMonthWhereCollaboratorId(
+    collaborator_id: string,
+    month: string,
+  ) {
+    return await this.timeTrackersRepository.getTimeTrackersFromMonthWhereCollaboratorId(
+      month,
+      collaborator_id,
+    );
+  }
+
+  async getTimeTrackersFromDayWhereCollaboratorId(
+    collaborator_id: string,
+    day: string,
+  ) {
+    return await this.timeTrackersRepository.getTimeTrackersFromDayWhereCollaboratorId(
+      day,
+      collaborator_id,
+    );
+  }
+
+  async getTimeTrackersFromMonthWhereProjectId(
+    project_id: string,
+    month: string,
+  ) {
+    return await this.timeTrackersRepository.getTimeTrackersFromMonthWhereProjectId(
+      month,
+      project_id,
+    );
+  }
+
+  async getTimeTrackersFromDayWhereProjectId(project_id: string, day: string) {
+    return await this.timeTrackersRepository.getTimeTrackersFromDayWhereProjectId(
+      day,
+      project_id,
+    );
+  }
+
   async update(id: string, updateTimeTrackerDto: UpdateTimeTrackerDto) {
     return await this.timeTrackersRepository.update(id, updateTimeTrackerDto);
   }

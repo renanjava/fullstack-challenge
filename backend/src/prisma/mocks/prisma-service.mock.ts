@@ -29,4 +29,5 @@ export const mockPrismaService = () => ({
     findUniqueOrThrow: jest.fn(),
     update: jest.fn(),
   },
+  $queryRaw: jest.fn(),
 });

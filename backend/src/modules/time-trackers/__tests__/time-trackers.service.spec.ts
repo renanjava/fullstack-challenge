@@ -118,6 +118,104 @@ describe('TimeTrackersService', () => {
     expect(timeTrackersRepository.findOne).toHaveBeenCalledWith(timetracker.id);
   });
 
+  it('should get time trackers from day correctly', async () => {
+    const mockResult = { day: '2024-01-01', hours_in_day: 8 };
+    const day = '2024-01-01';
+    timeTrackersRepository.getTimeTrackersFromDay.mockResolvedValue(mockResult);
+    const result = await service.getTimeTrackersFromDay(day);
+
+    expect(result).toEqual(mockResult);
+    expect(timeTrackersRepository.getTimeTrackersFromDay).toHaveBeenCalledWith(
+      day,
+    );
+  });
+
+  it('should get time trackers from month correctly', async () => {
+    const mockResult = { month: '2024-01', hours_in_month: 160 };
+    const month = '2024-01-01';
+    timeTrackersRepository.getTimeTrackersFromMonth.mockResolvedValue(
+      mockResult,
+    );
+    const result = await service.getTimeTrackersFromMonth(month);
+
+    expect(result).toEqual(mockResult);
+    expect(
+      timeTrackersRepository.getTimeTrackersFromMonth,
+    ).toHaveBeenCalledWith(month);
+  });
+
+  it('should get time trackers from day where collaborator id correctly', async () => {
+    const mockResult = { day: '2024-01-01', hours_in_day: 8 };
+    const collaboratorId = 'collaborator-id';
+    const day = '2024-01-01';
+    timeTrackersRepository.getTimeTrackersFromDayWhereCollaboratorId.mockResolvedValue(
+      mockResult,
+    );
+    const result = await service.getTimeTrackersFromDayWhereCollaboratorId(
+      collaboratorId,
+      day,
+    );
+
+    expect(result).toEqual(mockResult);
+    expect(
+      timeTrackersRepository.getTimeTrackersFromDayWhereCollaboratorId,
+    ).toHaveBeenCalledWith(day, collaboratorId);
+  });
+
+  it('should get time trackers from month where collaborator id correctly', async () => {
+    const mockResult = { month: '2024-01', hours_in_month: 160 };
+    const collaboratorId = 'collaborator-id';
+    const month = '2024-01-01';
+    timeTrackersRepository.getTimeTrackersFromMonthWhereCollaboratorId.mockResolvedValue(
+      mockResult,
+    );
+    const result = await service.getTimeTrackersFromMonthWhereCollaboratorId(
+      collaboratorId,
+      month,
+    );
+
+    expect(result).toEqual(mockResult);
+    expect(
+      timeTrackersRepository.getTimeTrackersFromMonthWhereCollaboratorId,
+    ).toHaveBeenCalledWith(month, collaboratorId);
+  });
+
+  it('should get time trackers from day where project id correctly', async () => {
+    const mockResult = { day: '2024-01-01', hours_in_day: 8 };
+    const projectId = 'project-id';
+    const day = '2024-01-01';
+    timeTrackersRepository.getTimeTrackersFromDayWhereProjectId.mockResolvedValue(
+      mockResult,
+    );
+    const result = await service.getTimeTrackersFromDayWhereProjectId(
+      projectId,
+      day,
+    );
+
+    expect(result).toEqual(mockResult);
+    expect(
+      timeTrackersRepository.getTimeTrackersFromDayWhereProjectId,
+    ).toHaveBeenCalledWith(day, projectId);
+  });
+
+  it('should get time trackers from month where project id correctly', async () => {
+    const mockResult = { month: '2024-01', hours_in_month: 160 };
+    const projectId = 'project-id';
+    const month = '2024-01-01';
+    timeTrackersRepository.getTimeTrackersFromMonthWhereProjectId.mockResolvedValue(
+      mockResult,
+    );
+    const result = await service.getTimeTrackersFromMonthWhereProjectId(
+      projectId,
+      month,
+    );
+
+    expect(result).toEqual(mockResult);
+    expect(
+      timeTrackersRepository.getTimeTrackersFromMonthWhereProjectId,
+    ).toHaveBeenCalledWith(month, projectId);
+  });
+
   it('should update timetracker correctly', async () => {
     const timetracker = new TimeTrackersStub();
     const now = new Date();
