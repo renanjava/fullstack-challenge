@@ -7,9 +7,13 @@
       :collaborator-list="collaboratorsNameList"
       @submit-tarefa="submitTimeTrackerForm"
     />
-    <Filter :collaborator-list="collaboratorsNameList" :project-list="projectNameList" />
+    <Filter
+      :collaborator-list="collaboratorsNameList"
+      :project-list="projectNameList"
+      @filter-applied="applyFilter"
+    />
     <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
-    <List :list="tasksList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
+    <List :list="filteredTasksList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
       :class="{ 'is-active': showEditOrCreateModal }"
       :inputData="taskJsonModal"
@@ -73,6 +77,8 @@ export default defineComponent({
     const entityName = 'tasks'
     const getProjects = ref([] as IProjects[])
     const getCollaborators = ref([] as ICollaborators[])
+    const activeFilter = ref<{ type: string; id: string } | null>(null)
+    const taskIdsFromCollaborator = ref<string[]>([])
 
     const { handleCrudOperation } = useCrudOperations<ITasks>('tasks', {
       listRef: tasksList,
@@ -111,6 +117,22 @@ export default defineComponent({
       }))
     })
 
+    const filteredTasksList = computed(() => {
+      if (!activeFilter.value) {
+        return tasksList.value
+      }
+
+      if (activeFilter.value.type === 'project') {
+        return tasksList.value.filter((task) => task.project_id === activeFilter.value!.id)
+      }
+
+      if (activeFilter.value.type === 'collaborator') {
+        return tasksList.value.filter((task) => taskIdsFromCollaborator.value.includes(task.id))
+      }
+
+      return tasksList.value
+    })
+
     const updateListWithNewCreatedData = (data: ITasks) => {
       tasksList.value.push(data)
       showEditOrCreateModal.value = false
@@ -135,6 +157,35 @@ export default defineComponent({
       console.log({ data })
     }
 
+    const applyFilter = async (data: { type: string; value: string }) => {
+      console.log('Filter applied:', data)
+
+      if (!data.type || !data.value) {
+        activeFilter.value = null
+        taskIdsFromCollaborator.value = []
+        return
+      }
+
+      activeFilter.value = { type: data.type, id: data.value }
+
+      if (data.type === 'collaborator') {
+        try {
+          const timeTrackers = await getGenericEndPoint('time-trackers')
+          console.log('Time trackers:', timeTrackers)
+
+          taskIdsFromCollaborator.value = timeTrackers
+            .filter((tracker: any) => tracker.collaborator_id === data.value)
+            .map((tracker: any) => tracker.task_id)
+            .filter((value: string, index: number, self: string[]) => self.indexOf(value) === index)
+
+          console.log('Task IDs from collaborator:', taskIdsFromCollaborator.value)
+        } catch (error) {
+          console.error('Erro ao buscar time trackers:', error)
+          taskIdsFromCollaborator.value = []
+        }
+      }
+    }
+
     onMounted(async () => {
       tasksList.value = await getGenericEndPoint('tasks')
       getProjects.value = await getGenericEndPoint('projects')
@@ -155,6 +206,7 @@ export default defineComponent({
 
     return {
       tasksList,
+      filteredTasksList,
       showEditOrCreateModal,
       taskJsonModal,
       taskIdModal,
@@ -170,6 +222,7 @@ export default defineComponent({
       updateListWithNewCreatedData,
       updateListWithNewUpdatedData,
       submitTimeTrackerForm,
+      applyFilter,
     }
   },
 })
