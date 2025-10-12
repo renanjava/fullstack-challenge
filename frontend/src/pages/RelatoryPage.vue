@@ -12,99 +12,29 @@
     <div class="reports-container">
       <div class="reports-header">
         <h2 class="section-title">Relatórios</h2>
-        <div class="date-selector">
-          <label class="selector-label">Período do Tempo</label>
-          <div class="select">
-            <select v-model="selectedPeriod">
-              <option value="today">Hoje</option>
-              <option value="week">Esta Semana</option>
-              <option value="month">Este Mês</option>
-              <option value="year">Este Ano</option>
-              <option value="custom">Personalizado</option>
-            </select>
-          </div>
-        </div>
       </div>
 
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="stat-label">Horas Trabalhadas</span>
-            <span class="stat-icon">
-              <i class="fas fa-clock"></i>
-            </span>
-          </div>
-          <div class="stat-value">{{ workedHours }}</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="stat-label">Total Horas</span>
-            <span class="stat-icon">
-              <i class="fas fa-calendar"></i>
-            </span>
-          </div>
-          <div class="stat-value">{{ totalHours }}</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="stat-label">Horas Restantes</span>
-            <span class="stat-icon">
-              <i class="fas fa-hourglass-half"></i>
-            </span>
-          </div>
-          <div class="stat-value">{{ remainingHours }}</div>
-        </div>
-      </div>
-
-      <div class="charts-section">
-        <div class="chart-card">
-          <div class="chart-header">
-            <h3 class="chart-title">Gráfico de Barras - Horas por Dia</h3>
-            <button class="export-btn">
-              <i class="fas fa-download"></i>
-              Exportar
-            </button>
-          </div>
-          <div class="chart-placeholder">
-            <canvas ref="barChart"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-header">
-            <h3 class="chart-title">Gráfico de Linhas - Evolução Temporal</h3>
-            <button class="export-btn">
-              <i class="fas fa-download"></i>
-              Exportar
-            </button>
-          </div>
-          <div class="chart-placeholder">
-            <canvas ref="lineChart"></canvas>
-          </div>
-        </div>
-      </div>
+      <DaysAndMonthsWorked />
+      <Filter />
     </div>
   </DefaultMain>
 </template>
 
 <script lang="ts">
+import DaysAndMonthsWorked from '@/components/DaysAndMonthsWorked.vue'
 import DefaultMain from '@/components/DefaultMain.vue'
+import Filter from '@/components/Filter.vue'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'RelatoryPage',
   components: {
     DefaultMain,
+    DaysAndMonthsWorked,
+    Filter,
   },
   data() {
-    return {
-      selectedPeriod: 'today',
-      workedHours: '0:01',
-      totalHours: '1',
-      remainingHours: '0:01',
-    }
+    return {}
   },
   mounted() {
     this.renderCharts()

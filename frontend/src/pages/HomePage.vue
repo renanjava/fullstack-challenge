@@ -1,5 +1,6 @@
 <script lang="ts">
 import { getGenericEndPoint } from '@/api/api'
+import DaysAndMonthsWorked from '@/components/DaysAndMonthsWorked.vue'
 import DefaultMain from '@/components/DefaultMain.vue'
 import { defineComponent } from 'vue'
 
@@ -7,6 +8,7 @@ export default defineComponent({
   name: 'HomePage',
   components: {
     DefaultMain,
+    DaysAndMonthsWorked,
   },
   data() {
     return {
@@ -107,54 +109,7 @@ export default defineComponent({
     :primary-text="`Bem vindo ${this.username}!`"
     :second-text="'Visão geral do seu controle de tempo'"
   >
-    <div class="columns is-multiline mb-5">
-      <div class="column is-3">
-        <div class="card stats-card">
-          <div class="card-content">
-            <div class="level is-mobile mb-2">
-              <div class="level-left">
-                <div class="level-item">
-                  <p class="heading has-text-grey">Tempo Hoje</p>
-                </div>
-              </div>
-              <div class="level-right">
-                <div class="level-item">
-                  <span class="icon-circle purple-bg">
-                    <i class="fas fa-clock"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <p class="title is-3 mb-1">{{ todayHours }}</p>
-            <p class="subtitle is-7 has-text-grey">Horas trabalhadas hoje</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="column is-3">
-        <div class="card stats-card">
-          <div class="card-content">
-            <div class="level is-mobile mb-2">
-              <div class="level-left">
-                <div class="level-item">
-                  <p class="heading has-text-grey">Tempo Mensal</p>
-                </div>
-              </div>
-              <div class="level-right">
-                <div class="level-item">
-                  <span class="icon-circle green-bg">
-                    <i class="fas fa-calendar"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <p class="title is-3 mb-1">{{ monthlyHours }}</p>
-            <p class="subtitle is-7 has-text-grey">Total de horas este mês</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <DaysAndMonthsWorked :today-hours="todayHours" :monthly-hours="monthlyHours" />
     <div class="columns">
       <div class="column is-6">
         <div class="card">
@@ -186,6 +141,9 @@ export default defineComponent({
                     </div>
                   </div>
                 </div>
+              </div>
+              <div v-else>
+                <p class="subtitle">Nenhum item encontrado</p>
               </div>
             </div>
           </div>
