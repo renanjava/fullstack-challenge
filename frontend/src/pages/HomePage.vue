@@ -16,15 +16,7 @@ export default defineComponent({
       username: '',
       todayHours: '0:00',
       monthlyHours: '0:00',
-      recentActivities: [
-        {
-          id: '',
-          name: '',
-          project: '',
-          time: '11:11:11',
-          active: true,
-        },
-      ],
+      recentActivities: [],
     }
   },
   methods: {
@@ -77,6 +69,8 @@ export default defineComponent({
     this.monthlyHours = this.hoursToHHMM(responseMonth[0].hours_in_month)
 
     const responseTimeTrackerList = await getGenericEndPoint('time-trackers')
+    console.log({ responseTimeTrackerList })
+
     const lastThreeTimeTrackers = responseTimeTrackerList
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       .slice(0, 3)
