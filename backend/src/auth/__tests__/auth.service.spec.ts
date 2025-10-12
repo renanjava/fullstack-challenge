@@ -44,7 +44,13 @@ describe('AuthService', () => {
 
     const result = await service.login(user as UserRegisterDto);
 
-    expect(result).toEqual({ access_token: 'jwt-token-12345' });
+    expect(result).toEqual({
+      access_token: 'jwt-token-12345',
+      payload: {
+        sub: user.id,
+        username: user.username,
+      },
+    });
     expect(usersService.findByUsernameAndReturnPassword).toHaveBeenCalledWith(
       user.username,
     );
