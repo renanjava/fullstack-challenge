@@ -7,7 +7,7 @@
       :collaborator-list="collaboratorsNameList"
       @submit-tarefa="submitTimeTrackerForm"
     />
-    <Filter />
+    <Filter :collaborator-list="collaboratorsNameList" :project-list="projectNameList" />
     <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
     <List :list="tasksList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
@@ -104,6 +104,13 @@ export default defineComponent({
       }))
     })
 
+    const projectNameList = computed(() => {
+      return getProjects.value.map((project) => ({
+        label: project.name,
+        value: project.id,
+      }))
+    })
+
     const updateListWithNewCreatedData = (data: ITasks) => {
       tasksList.value.push(data)
       showEditOrCreateModal.value = false
@@ -152,6 +159,7 @@ export default defineComponent({
       taskJsonModal,
       taskIdModal,
       taskNameList,
+      projectNameList,
       event,
       buttonName,
       entityName,
