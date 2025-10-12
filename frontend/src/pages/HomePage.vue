@@ -14,9 +14,13 @@ export default defineComponent({
       todayHours: '0:00',
       monthlyHours: '0:00',
       recentActivities: [
-        { id: 1, name: 'Tarefa #1', project: 'Projeto Alpha', time: '1:30h', active: true },
-        { id: 2, name: 'Tarefa #2', project: 'Projeto Alpha', time: '1:30h', active: true },
-        { id: 3, name: 'Tarefa #3', project: 'Projeto Alpha', time: '1:30h', active: true },
+        {
+          id: '',
+          name: '',
+          project: '',
+          time: '11:11:11',
+          active: true,
+        },
       ],
     }
   },
@@ -27,6 +31,17 @@ export default defineComponent({
       const m = Math.floor(totalMinutes % 60)
       const s = Math.round((totalMinutes % 1) * 60)
       return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+    },
+    getTimeDifference(startDate: Date, endDate: Date) {
+      const diffMs = Math.abs(endDate.getTime() - startDate.getTime())
+
+      const totalSeconds = Math.floor(diffMs / 1000)
+      const hours = Math.floor(totalSeconds / 3600)
+      const minutes = Math.floor((totalSeconds % 3600) / 60)
+      const seconds = totalSeconds % 60
+
+      const format = (n) => String(n).padStart(2, '0')
+      return `${format(hours)}:${format(minutes)}:${format(seconds)}`
     },
   },
   async mounted() {
@@ -51,20 +66,32 @@ export default defineComponent({
       this.$router.push('/login')
     }
 
-    const payloadDay = new Date().toISOString().split('T')[0]
-    const responseDay = await getGenericEndPoint(`time-trackers/day/${payloadDay}`)
-    this.todayHours = this.hoursToHHMM(responseDay[0].hours_in_day)
+    const today = new Date().toISOString().split('T')[0]
 
-    const payloadMonth = new Date().toISOString().split('T')[0]
-    const responseMonth = await getGenericEndPoint(`time-trackers/month/${payloadDay}`)
+    const responseDay = await getGenericEndPoint(`time-trackers/day/${today}`)
+    this.todayHours = this.hoursToHHMM(responseDay[0].hours_in_day)
+    const responseMonth = await getGenericEndPoint(`time-trackers/month/${today}`)
     this.monthlyHours = this.hoursToHHMM(responseMonth[0].hours_in_month)
 
-    console.log(`time-trackers/day/${payloadDay}`)
-    console.log({ todayHours: this.todayHours })
-    console.log(responseDay[0].hours_in_day)
-    console.log(`time-trackers/month/${payloadMonth}`)
-    console.log({ monthlyHours: this.monthlyHours })
-    console.log(responseMonth[0].hours_in_month)
+    const responseTimeTrackerList = await getGenericEndPoint('time-trackers')
+    const lastThreeTimeTrackers = responseTimeTrackerList
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 3)
+    this.recentActivities = await Promise.all(
+      lastThreeTimeTrackers.map(async (timeTracker) => {
+        const project = await getGenericEndPoint(`projects/${timeTracker.tasks.project_id}`)
+        return {
+          id: timeTracker.id,
+          name: timeTracker.tasks.name,
+          project: project.name,
+          time: this.getTimeDifference(
+            new Date(timeTracker.start_date),
+            new Date(timeTracker.end_date),
+          ),
+          active: true,
+        }
+      }),
+    )
   },
 })
 </script>
@@ -135,7 +162,12 @@ export default defineComponent({
             <h2 class="title is-5 mb-4">Atividade Recente</h2>
 
             <div class="activity-list">
-              <div v-for="activity in recentActivities" :key="activity.id" class="activity-item">
+              <div
+                v-if="recentActivities.length > 0"
+                v-for="activity in recentActivities"
+                :key="activity.id"
+                class="activity-item"
+              >
                 <div class="level is-mobile">
                   <div class="level-left">
                     <div class="level-item">

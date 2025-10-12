@@ -1,13 +1,13 @@
 <template>
   <div class="is-flex is-align-items-center is-justify-content-space-between">
-    <StopWatch :time-in-seconds="tempoEmSegundos" />
-    <button class="button" @click="iniciar()" :disabled="cronometroRodando || !taskSelected">
+    <StopWatch :time-in-seconds="timeInSeconds" />
+    <button class="button" @click="start()" :disabled="runningStopWatch || !taskSelected">
       <span class="icon">
         <i class="fas fa-play"></i>
       </span>
       <span>play</span>
     </button>
-    <button class="button" @click="finalizar()" :disabled="!cronometroRodando">
+    <button class="button" @click="finish()" :disabled="!runningStopWatch">
       <span class="icon">
         <i class="fas fa-stop"></i>
       </span>
@@ -25,9 +25,9 @@ export default defineComponent({
   emits: ['toTimerFinished'],
   data() {
     return {
-      tempoEmSegundos: 0,
-      cronometro: 0,
-      cronometroRodando: false,
+      timeInSeconds: 0,
+      timer: 0,
+      runningStopWatch: false,
       startDate: null as Date | null,
       endDate: null as Date | null,
       timezoneId: '',
@@ -40,24 +40,24 @@ export default defineComponent({
     StopWatch,
   },
   methods: {
-    iniciar() {
+    start() {
       this.timezoneId = Intl.DateTimeFormat().resolvedOptions().timeZone
       this.startDate = new Date()
-      this.cronometro = setInterval(() => {
-        this.tempoEmSegundos += 1
+      this.timer = setInterval(() => {
+        this.timeInSeconds += 1
       }, 1000)
-      this.cronometroRodando = true
+      this.runningStopWatch = true
     },
-    finalizar() {
+    finish() {
       this.endDate = new Date()
-      clearInterval(this.cronometro)
-      this.cronometroRodando = false
+      clearInterval(this.timer)
+      this.runningStopWatch = false
       this.$emit('toTimerFinished', {
-        start_date: this.startDate?.toISOString(),
+        start_date: this.startDate.toISOString(),
         end_date: this.endDate.toISOString(),
         timezone_id: this.timezoneId,
       })
-      this.tempoEmSegundos = 0
+      this.timeInSeconds = 0
     },
   },
 })

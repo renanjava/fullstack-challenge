@@ -62,7 +62,6 @@ export default defineComponent({
   components: {
     Timer,
   },
-  emits: ['submitTarefa'],
   data() {
     return {
       selectTask: '',
@@ -88,10 +87,7 @@ export default defineComponent({
       if (this.selectCollaborator != '') {
         createTaskPayload.collaborator_id = this.selectCollaborator
       }
-      const response = await postGenericEndPoint('time-trackers', createTaskPayload)
-      console.log({ response_time_tracker: response })
-
-      this.$emit('submitTarefa', createTaskPayload)
+      await postGenericEndPoint('time-trackers', createTaskPayload)
     },
   },
 })

@@ -5,7 +5,6 @@
       v-if="tasksList.length > 0"
       :task-name-list="taskNameList"
       :collaborator-list="collaboratorsNameList"
-      @submit-tarefa="submitTimeTrackerForm"
     />
     <Filter
       :collaborator-list="collaboratorsNameList"
@@ -153,13 +152,7 @@ export default defineComponent({
       taskJsonModal.value[1].editValue = ''
     }
 
-    const submitTimeTrackerForm = (data: any) => {
-      console.log({ data })
-    }
-
     const applyFilter = async (data: { type: string; value: string }) => {
-      console.log('Filter applied:', data)
-
       if (!data.type || !data.value) {
         activeFilter.value = null
         taskIdsFromCollaborator.value = []
@@ -171,14 +164,10 @@ export default defineComponent({
       if (data.type === 'collaborator') {
         try {
           const timeTrackers = await getGenericEndPoint('time-trackers')
-          console.log('Time trackers:', timeTrackers)
-
           taskIdsFromCollaborator.value = timeTrackers
             .filter((tracker: any) => tracker.collaborator_id === data.value)
             .map((tracker: any) => tracker.task_id)
             .filter((value: string, index: number, self: string[]) => self.indexOf(value) === index)
-
-          console.log('Task IDs from collaborator:', taskIdsFromCollaborator.value)
         } catch (error) {
           console.error('Erro ao buscar time trackers:', error)
           taskIdsFromCollaborator.value = []
@@ -221,7 +210,6 @@ export default defineComponent({
       closeModalAndClearEditForm,
       updateListWithNewCreatedData,
       updateListWithNewUpdatedData,
-      submitTimeTrackerForm,
       applyFilter,
     }
   },
