@@ -1,7 +1,9 @@
+import { API_URL } from '@/constants/constants'
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function loginEndPoint(username: string, password: string) {
   try {
-    const res = await fetch('http://localhost:3000/auth/login', {
+    const res = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
@@ -15,7 +17,7 @@ export async function loginEndPoint(username: string, password: string) {
 
 export async function getGenericEndPoint(entity: string) {
   try {
-    const res = await fetch(`http://localhost:3000/${entity}`, {
+    const res = await fetch(`${API_URL}/${entity}`, {
       method: 'GET',
     })
     const response = await res.json()
@@ -27,7 +29,7 @@ export async function getGenericEndPoint(entity: string) {
 
 export async function postGenericEndPoint(entity: string, data: Record<string, any>) {
   try {
-    const res = await fetch(`http://localhost:3000/${entity}`, {
+    const res = await fetch(`${API_URL}/${entity}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -45,7 +47,7 @@ export async function patchGenericEndPoint(
   data: Record<string, any>,
 ) {
   try {
-    const res = await fetch(`http://localhost:3000/${entity}/${entityId}`, {
+    const res = await fetch(`${API_URL}/${entity}/${entityId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -59,7 +61,7 @@ export async function patchGenericEndPoint(
 
 export async function deleteGenericEndPoint(entity: string, entityId: string) {
   try {
-    const res = await fetch(`http://localhost:3000/${entity}/${entityId}`, {
+    const res = await fetch(`${API_URL}/${entity}/${entityId}`, {
       method: 'DELETE',
     })
     const response = await res.json()

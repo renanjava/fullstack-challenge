@@ -2,6 +2,7 @@
 import { getGenericEndPoint } from '@/api/api'
 import DaysAndMonthsWorked from '@/components/DaysAndMonthsWorked.vue'
 import DefaultMain from '@/components/DefaultMain.vue'
+import { API_URL } from '@/constants/constants'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -53,7 +54,7 @@ export default defineComponent({
       return
     }
     try {
-      const res = await fetch('http://localhost:3000/auth/profile', {
+      const res = await fetch(`${API_URL}/auth/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       const resJson = await res.json()
