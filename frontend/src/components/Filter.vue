@@ -94,15 +94,69 @@ export default defineComponent({
 .filter-form {
   max-width: 700px;
   margin: 1rem auto;
+  background-color: #ffffff;
+  border: 1px solid #e1e4e8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  color: #2c3e50;
+}
+
+.label {
+  color: #4a5568;
+  font-weight: 600;
+}
+
+.select select {
+  background-color: #ffffff;
+  border-color: #d1d5db;
+  color: #2c3e50;
+}
+
+.select select:hover {
+  border-color: #9ca3af;
+}
+
+.select select:focus {
+  border-color: #3273dc;
+  box-shadow: 0 0 0 0.125em rgba(50, 115, 220, 0.25);
+}
+
+.select select option {
+  background-color: #ffffff;
+  color: #2c3e50;
+}
+
+.select select option:disabled {
+  color: #9ca3af;
 }
 
 button.is-primary {
   font-weight: 600;
+  background-color: #3273dc;
+  border-color: transparent;
+  color: #ffffff;
+}
+
+button.is-primary:hover:not(:disabled) {
+  background-color: #2366d1;
+}
+
+button.is-primary:disabled {
+  background-color: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 @media (max-width: 768px) {
   .filter-form {
     padding: 1rem;
   }
+}
+
+.filter-form * {
+  color-scheme: light;
 }
 </style>

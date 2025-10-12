@@ -141,6 +141,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.title {
+  color: #2b2b2b;
+}
+
 .card {
   background-color: white !important;
   color: #363636 !important;

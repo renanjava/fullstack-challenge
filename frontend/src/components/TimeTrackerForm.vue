@@ -92,3 +92,77 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+.formulario {
+  background-color: #ffffff;
+  border: 1px solid #e1e4e8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.label {
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.select select {
+  background-color: #ffffff;
+  border-color: #d1d5db;
+  color: #2c3e50;
+  transition: all 0.2s ease;
+}
+
+.select select:hover {
+  border-color: #9ca3af;
+}
+
+.select select:focus {
+  border-color: #3273dc;
+  box-shadow: 0 0 0 0.125em rgba(50, 115, 220, 0.25);
+  outline: none;
+}
+
+.select select option {
+  background-color: #ffffff;
+  color: #2c3e50;
+  padding: 0.5rem;
+}
+
+.select select option:disabled {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.select select option:checked {
+  background-color: #3273dc;
+  color: #ffffff;
+}
+
+.select select:required:invalid {
+  border-color: #f14668;
+}
+
+.formulario * {
+  color-scheme: light;
+}
+
+.field {
+  margin-bottom: 0.75rem;
+}
+
+.select:hover select {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .formulario {
+    padding: 1rem;
+  }
+
+  .label {
+    font-size: 0.85rem;
+  }
+}
+</style>

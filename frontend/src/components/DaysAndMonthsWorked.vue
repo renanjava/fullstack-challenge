@@ -60,7 +60,11 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
+.title {
+  color: #0000006e !important;
+}
+
 .card {
   background-color: white !important;
   color: #363636 !important;
