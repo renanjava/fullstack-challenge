@@ -3,6 +3,7 @@ import { getGenericEndPoint } from '@/api/api'
 import DaysAndMonthsWorked from '@/components/DaysAndMonthsWorked.vue'
 import DefaultMain from '@/components/DefaultMain.vue'
 import { API_URL } from '@/constants/constants'
+import { hoursToHHMM } from '@/utils/utils'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -20,13 +21,6 @@ export default defineComponent({
     }
   },
   methods: {
-    hoursToHHMM(hours: any) {
-      const totalMinutes = hours * 60
-      const h = Math.floor(totalMinutes / 60)
-      const m = Math.floor(totalMinutes % 60)
-      const s = Math.round((totalMinutes % 1) * 60)
-      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-    },
     getTimeDifference(startDate: Date, endDate: Date) {
       const diffMs = Math.abs(endDate.getTime() - startDate.getTime())
 
@@ -64,13 +58,11 @@ export default defineComponent({
     const today = new Date().toISOString().split('T')[0]
 
     const responseDay = await getGenericEndPoint(`time-trackers/day/${today}`)
-    this.todayHours = this.hoursToHHMM(responseDay[0].hours_in_day)
+    this.todayHours = hoursToHHMM(responseDay[0].hours_in_day)
     const responseMonth = await getGenericEndPoint(`time-trackers/month/${today}`)
-    this.monthlyHours = this.hoursToHHMM(responseMonth[0].hours_in_month)
+    this.monthlyHours = hoursToHHMM(responseMonth[0].hours_in_month)
 
     const responseTimeTrackerList = await getGenericEndPoint('time-trackers')
-    console.log({ responseTimeTrackerList })
-
     const lastThreeTimeTrackers = responseTimeTrackerList
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       .slice(0, 3)
