@@ -86,6 +86,11 @@ export default defineComponent({
 })
 </script>
 <style scoped>
+.sidebar-custom {
+  z-index: 100;
+  position: relative;
+}
+
 .hero-body,
 .container,
 .menu-item-custom {
