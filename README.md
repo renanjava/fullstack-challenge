@@ -73,7 +73,6 @@ Time Tracker é uma aplicação fullstack completa para gerenciamento de tempo e
 │   │   ├── utils/             # Funções utilitárias
 │   │   ├── router/            # Configuração de rotas
 │   │   └── App.vue
-│   ├── nginx.conf             # Configuração Nginx
 │   └── Dockerfile
 │
 ├── docker-compose.yml
@@ -130,13 +129,33 @@ Time Tracker é uma aplicação fullstack completa para gerenciamento de tempo e
 
 ---
 
+## ✅ Validações e Regras de Negócio
+
+- Username único
+- Password criptografado (bcrypt)
+- Não permite time tracker com intervalo de tempo conflitante
+- Task sempre associada a um projeto
+- Colaborador opcional na task
+- Total de horas em um dia ≤ 24h
+- Timezone enviado em toda requisição de time tracker
+- Data de início ≤ data de fim
+- Validação de campos no frontend e backend
+
+---
+
+## 👤 User Stories
+
+- Usuário pode ver/adicionar/editar/excluir projetos
+- Usuário pode ver/adicionar/editar/excluir tarefas
+- Usuário pode associar tarefa a projeto e colaborador
+- Usuário pode filtrar tarefas por projeto/colaborador
+- Usuário pode iniciar/parar time tracker de uma tarefa
+- Usuário vê tempo gasto no dia/mês em destaque (HH:MM)
+- Usuário vê relatório dia-a-dia do mês
+
+---
+
 ## 🏗️ Arquitetura e Design Patterns
-
-### Clean Architecture
-
-- **Separação de Camadas**: Módulos organizados por domínio
-- **Desacoplamento**: Uso de interfaces e injeção de dependências
-- **Single Responsibility**: Cada módulo com responsabilidade única
 
 ### Design Patterns Aplicados
 
@@ -243,7 +262,7 @@ npm install
 
 ## 🖥️ Como Rodar a Aplicação
 
-### Opção 1: Docker Compose (Recomendado)
+### Docker Compose
 
 ```bash
 # Na raiz do projeto
@@ -256,40 +275,6 @@ A aplicação estará disponível em:
 - **Backend**: http://localhost:3000
 - **Swagger**: http://localhost:3000/api
 - **RabbitMQ Management**: http://localhost:15672 (guest/guest)
-
-### Opção 2: Desenvolvimento Local
-
-#### Backend:
-
-```bash
-cd backend
-
-# Subir apenas o PostgreSQL e RabbitMQ
-docker-compose up postgres rabbitmq -d
-
-# Aplicar migrations
-npx prisma migrate deploy
-
-# Gerar Prisma Client
-npx prisma generate
-
-# (Opcional) Rodar seeds
-npm run seed
-
-# Iniciar servidor de desenvolvimento
-npm run start:dev
-```
-
-#### Frontend:
-
-```bash
-cd frontend
-
-# Iniciar servidor de desenvolvimento
-npm run dev
-```
-
----
 
 ## 📚 Principais Rotas da API
 
@@ -525,7 +510,7 @@ Este projeto foi desenvolvido como parte de um teste técnico.
 ## 👨‍💻 Autor
 
 - GitHub: [@renanjava](https://github.com/renanjava)
-- LinkedIn: [Seu Nome](https://linkedin.com/in/renan-g-l)
+- LinkedIn: [Renan Geraldini Leão](https://linkedin.com/in/renan-g-l)
 - Email: renanleao.f90@hotmail.com
 
 ---
