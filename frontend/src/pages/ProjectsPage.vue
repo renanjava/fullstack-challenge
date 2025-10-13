@@ -1,6 +1,12 @@
 <template>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
   <DefaultMain :primary-text="'Projetos'" :second-text="'Organize seu trabalho em projetos'">
+    <Notification
+      :show="notification.show"
+      :type="notification.type"
+      :message="notification.message"
+      @close="closeNotification"
+    />
+
     <CreateButton :buttonName="buttonName" @open-modal="handleCrudOperation" />
     <List :list="projectsList" @edit="handleCrudOperation" @delete="handleCrudOperation" />
     <ModalForm
@@ -25,11 +31,17 @@ import ModalForm from '@/components/ModalForm.vue'
 import { getGenericEndPoint } from '@/api/api'
 import { useCrudOperations } from '@/api/utils/crud-operations'
 import type { IProjects } from '@/interfaces/projects.interface'
+import Notification from '@/components/Notification.vue'
 
 export default defineComponent({
   name: 'ProjectsPage',
-  components: { DefaultMain, List, CreateButton, ModalForm },
+  components: { DefaultMain, List, CreateButton, ModalForm, Notification },
   setup() {
+    const notification = ref({
+      show: false,
+      type: 'success',
+      message: '',
+    })
     const projectsList = ref<IProjects[]>([])
     const showEditOrCreateModal = ref(false)
     const projectJsonModal = ref([
@@ -56,15 +68,25 @@ export default defineComponent({
       },
     })
 
+    const showNotification = (type: string, message: string) => {
+      notification.value = { show: true, type, message }
+    }
+
+    const closeNotification = () => {
+      notification.value.show = false
+    }
+
     const updateListWithNewCreatedData = (data: IProjects) => {
       projectsList.value.push(data)
       showEditOrCreateModal.value = false
+      showNotification('success', 'Projeto criado com sucesso!')
     }
 
     const updateListWithNewUpdatedData = (data: IProjects) => {
       const index = projectsList.value.findIndex((p) => p.id === data.id)
       if (index !== -1) projectsList.value[index].name = data.name
       showEditOrCreateModal.value = false
+      showNotification('success', 'Projeto atualizado com sucesso!')
     }
 
     onMounted(async () => {
@@ -77,6 +99,7 @@ export default defineComponent({
     }
 
     return {
+      notification,
       projectsList,
       showEditOrCreateModal,
       projectJsonModal,
@@ -84,6 +107,7 @@ export default defineComponent({
       event,
       buttonName,
       entityName,
+      closeNotification,
       closeModalAndClearEditForm,
       handleCrudOperation,
       updateListWithNewCreatedData,

@@ -62,6 +62,7 @@ export default defineComponent({
   components: {
     Timer,
   },
+  emits: ['taskCompleted'],
   data() {
     return {
       selectTask: '',
@@ -88,6 +89,7 @@ export default defineComponent({
         createTaskPayload.collaborator_id = this.selectCollaborator
       }
       await postGenericEndPoint('time-trackers', createTaskPayload)
+      this.$emit('taskCompleted')
     },
   },
 })

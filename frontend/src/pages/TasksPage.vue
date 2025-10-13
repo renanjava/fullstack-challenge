@@ -1,10 +1,18 @@
 <template>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
   <DefaultMain :primary-text="'Tarefas'" :second-text="'Gerencie e acompanhe suas tarefas'">
+    <Notification
+      :show="notification.show"
+      :type="notification.type"
+      :message="notification.message"
+      :duration="3000"
+      @close="notification.show = false"
+    />
     <TimeTrackerForm
       v-if="tasksList.length > 0"
       :task-name-list="taskNameList"
       :collaborator-list="collaboratorsNameList"
+      @task-completed="handleTaskCompleted"
     />
     <Filter
       :collaborator-list="collaboratorsNameList"
@@ -39,6 +47,7 @@ import type { IProjects } from '@/interfaces/projects.interface'
 import TimeTrackerForm from '@/components/TimeTrackerForm.vue'
 import type { ICollaborators } from '@/interfaces/collaborators.interface'
 import Filter from '@/components/Filter.vue'
+import Notification from '@/components/Notification.vue'
 
 export default defineComponent({
   name: 'TasksPage',
@@ -49,8 +58,14 @@ export default defineComponent({
     ModalForm,
     TimeTrackerForm,
     Filter,
+    Notification,
   },
   setup() {
+    const notification = ref({
+      show: false,
+      type: 'success' as 'success' | 'danger' | 'warning' | 'info',
+      message: '',
+    })
     const tasksList = ref<ITasks[]>([])
     const showEditOrCreateModal = ref(false)
     const taskJsonModal = ref([
@@ -95,6 +110,25 @@ export default defineComponent({
       },
     })
 
+    const notify = {
+      success: (message: string) => {
+        notification.value = { show: true, type: 'success', message }
+      },
+      error: (message: string) => {
+        notification.value = { show: true, type: 'danger', message }
+      },
+      warning: (message: string) => {
+        notification.value = { show: true, type: 'warning', message }
+      },
+      info: (message: string) => {
+        notification.value = { show: true, type: 'info', message }
+      },
+    }
+
+    const handleTaskCompleted = () => {
+      notify.success('Tempo de tarefa registrada com sucesso!')
+    }
+
     const taskNameList = computed(() => {
       return tasksList.value.map((task) => ({
         label: task.name,
@@ -133,8 +167,13 @@ export default defineComponent({
     })
 
     const updateListWithNewCreatedData = (data: ITasks) => {
-      tasksList.value.push(data)
-      showEditOrCreateModal.value = false
+      try {
+        tasksList.value.push(data)
+        showEditOrCreateModal.value = false
+        notify.success('Tarefa criada com sucesso!')
+      } catch (error) {
+        notify.error('Erro ao criar tarefa. Tente novamente.')
+      }
     }
 
     const updateListWithNewUpdatedData = (data: ITasks) => {
@@ -144,6 +183,7 @@ export default defineComponent({
         tasksList.value[index].description = data.description
       }
       closeModalAndClearEditForm()
+      notify.success('Tarefa editada com sucesso!')
     }
 
     const closeModalAndClearEditForm = () => {
@@ -206,6 +246,9 @@ export default defineComponent({
       entityName,
       getCollaborators,
       collaboratorsNameList,
+      notification,
+      notify,
+      handleTaskCompleted,
       handleCrudOperation,
       closeModalAndClearEditForm,
       updateListWithNewCreatedData,
