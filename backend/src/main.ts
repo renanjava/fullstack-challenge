@@ -10,6 +10,17 @@ async function bootstrap() {
     .setDescription('Time Tracker API documentation')
     .setVersion('1.0')
     .addTag('time-tracker')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Insira o token JWT aqui',
+        in: 'header',
+      },
+      'access-token',
+    )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
