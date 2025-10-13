@@ -349,7 +349,8 @@ npm run dev
 - **DELETE** `/users/:id` - Soft delete de usuário
 - **PATCH** `/users/active/:id` - Reativar usuário
 
-**📖 Documentação completa disponível em**: http://localhost:3000/api (Swagger)
+- **📖 Documentação completa disponível em**: http://localhost:3000/api (Swagger)
+- **📖 Caso preferir, realize requisições no postman**: [Acesse a coleção do Postman](https://www.postman.com/renan-g-l/fullstack-challenge/collection/8z6hcp3/fullstack-challenge?action=share&creator=30576907)
 
 ---
 
