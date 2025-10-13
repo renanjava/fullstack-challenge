@@ -1,9 +1,0 @@
-services:
-  postgres:
-    image: postgres:17.4
-    restart: always
-    environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_DB: ${DATABASE_NAME}
-    ports:
-      - 5432:5432
