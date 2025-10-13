@@ -4,7 +4,7 @@ import { UsersStub } from '../stubs/users.stub';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { mockUsersRepository } from '../mocks/users-repository.mock';
 import { PrismaUsersRepository } from '../repositories/prisma-users.repository';
-import { UserRegisterDto } from 'src/auth/dtos/user-register.dto';
+import { UserRegisterDto } from '../../../auth/dtos/user-register.dto';
 
 describe('UsersService', () => {
   let service: UsersService;

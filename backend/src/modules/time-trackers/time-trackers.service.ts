@@ -1,17 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { PrismaTimeTrackersRepository } from './repositories/prisma-time-trackers.repository';
 import {
   BadRequestException,
-  ConflictException,
   Injectable,
+  Inject,
+  Logger,
+  ConflictException,
 } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { CreateTimeTrackerDto } from './dtos/create-time-tracker.dto';
 import { UpdateTimeTrackerDto } from './dtos/update-time-tracker.dto';
+import { RABBITMQ_PATTERNS } from '../../queue/constants/rabbitmq.constants';
+import { CreateTimeTrackerMessageDto } from '../../queue/dtos/create-time-tracker-message.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TimeTrackersService {
+  private readonly logger = new Logger(TimeTrackersService.name);
+
   constructor(
     private readonly timeTrackersRepository: PrismaTimeTrackersRepository,
+    @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
   ) {}
+
   async create(createTimeTrackerDto: CreateTimeTrackerDto) {
     const endDate = createTimeTrackerDto.end_date;
     const startDate = createTimeTrackerDto.start_date;
@@ -34,10 +45,34 @@ export class TimeTrackersService {
 
     const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    return await this.timeTrackersRepository.create({
+    const message: CreateTimeTrackerMessageDto = {
       ...createTimeTrackerDto,
       timezone_id: timeZoneId,
-    });
+      correlationId: uuidv4(),
+      timestamp: new Date(),
+    };
+
+    this.logger.log(
+      `Enviando time tracker para fila. CorrelationId: ${message.correlationId}`,
+    );
+
+    try {
+      this.rabbitClient.emit(RABBITMQ_PATTERNS.CREATE_TIME_TRACKER, message);
+
+      return {
+        ...createTimeTrackerDto,
+        timezone_id: timeZoneId,
+        message: 'Time tracker enviado para processamento',
+        correlationId: message.correlationId,
+        status: 'pending',
+      };
+    } catch (error) {
+      this.logger.error(
+        `Erro ao enviar para fila: ${error.message}`,
+        error.stack,
+      );
+      throw new BadRequestException('Erro ao processar requisição');
+    }
   }
 
   async findAll() {

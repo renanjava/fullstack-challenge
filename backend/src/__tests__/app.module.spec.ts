@@ -15,6 +15,9 @@ describe('AppModule', () => {
       .useValue({
         get: jest.fn().mockImplementation((key: string) => {
           if (key === 'JWT_SECRET') return 'unsecret-jwt-key';
+          if (key === 'RABBITMQ_URL') return 'unsecret-rabbitmq_url';
+          if (key === 'RABBITMQ_QUEUE_TIME_TRACKER')
+            return 'unsecret-rabbitmq-queue-time-tracker';
           return null;
         }),
       })

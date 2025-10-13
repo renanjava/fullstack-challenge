@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Test, TestingModule } from '@nestjs/testing';
 import { TimeTrackersService } from '../time-trackers.service';
 import { TimeTrackersStub } from '../stubs/time-trackers.stub';
@@ -5,10 +6,17 @@ import { UpdateTimeTrackerDto } from '../dtos/update-time-tracker.dto';
 import { mockTimeTrackersRepository } from '../mocks/time-trackers-repository.mock';
 import { PrismaTimeTrackersRepository } from '../repositories/prisma-time-trackers.repository';
 import { CreateTimeTrackerDto } from '../dtos/create-time-tracker.dto';
+import { v4 as uuidv4 } from 'uuid';
+import { mockClientProxy } from '../../../queue/mocks/client-proxy.mock';
+
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => '00000000-0000-4000-8000-000000000000'),
+}));
 
 describe('TimeTrackersService', () => {
   let service: TimeTrackersService;
   const timeTrackersRepository = mockTimeTrackersRepository();
+  const clientProxy = mockClientProxy();
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -27,6 +35,10 @@ describe('TimeTrackersService', () => {
           provide: PrismaTimeTrackersRepository,
           useValue: timeTrackersRepository,
         },
+        {
+          provide: 'RABBITMQ_SERVICE',
+          useValue: clientProxy,
+        },
       ],
     }).compile();
 
@@ -37,29 +49,29 @@ describe('TimeTrackersService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create timetrackers correctly with expected timezone id', async () => {
+  it('should create timetrackers correctly with message from rabbitmq', async () => {
     const timeTracker = new TimeTrackersStub();
     const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const timeTrackerWithCorrectTimeZoneId = {
       ...timeTracker,
       timezone_id: timeZoneId,
     };
-    timeTrackersRepository.create.mockResolvedValue(
-      timeTrackerWithCorrectTimeZoneId,
-    );
+    const rabbitmqMessage = {
+      correlationId: '00000000-0000-4000-8000-000000000000',
+      message: 'Time tracker enviado para processamento',
+      status: 'pending',
+    };
     timeTrackersRepository.verifyTimeConflict.mockResolvedValue([]);
     const result = await service.create(timeTracker as CreateTimeTrackerDto);
 
-    expect(result).toEqual(timeTrackerWithCorrectTimeZoneId);
-    expect(timeTrackersRepository.create).toHaveBeenCalledWith(
-      timeTrackerWithCorrectTimeZoneId,
-    );
+    expect(result).toEqual({
+      ...timeTrackerWithCorrectTimeZoneId,
+      ...rabbitmqMessage,
+    });
     expect(timeTrackersRepository.verifyTimeConflict).toHaveBeenCalledWith(
       timeTracker.end_date,
       timeTracker.start_date,
     );
-    expect(timeTracker.timezone_id).not.toEqual(result.timezone_id);
-    expect(result.timezone_id).toEqual(timeZoneId);
   });
 
   it('should throw error when try create timetrackers with invalid dates', async () => {

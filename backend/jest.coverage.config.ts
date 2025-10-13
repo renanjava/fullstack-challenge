@@ -14,7 +14,7 @@ export default {
   coverageDirectory: './coverage',
   testEnvironment: 'node',
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/', '/build/'],
-  transformIgnorePatterns: ['/node_modules/(?!@faker-js/faker)'],
+  transformIgnorePatterns: ['/node_modules/(?!(@faker-js/faker|uuid))'],
   collectCoverage: true,
   coverageThreshold: {
     global: {

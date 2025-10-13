@@ -7,19 +7,21 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { TimeTrackersModule } from './modules/time-trackers/time-trackers.module';
 import { AuthModule } from './auth/auth.module';
+import { RabbitmqModule } from './queue/rabbitmq.module';
 import { APP_FILTER } from '@nestjs/core';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    RabbitmqModule,
     UsersModule,
     CollaboratorsModule,
     ProjectsModule,
     TasksModule,
     TimeTrackersModule,
     AuthModule,
-    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [AppController],
   providers: [

@@ -15,6 +15,26 @@ services:
     networks:
       - app-network
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: ./backend
@@ -25,7 +45,10 @@ services:
     env_file:
       - ./backend/.env
     depends_on:
-      - postgres
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_started
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
       interval: 10s
@@ -48,6 +71,7 @@ services:
 
 volumes:
   pgdata:
+  rabbitmq_data:
 
 networks:
   app-network:

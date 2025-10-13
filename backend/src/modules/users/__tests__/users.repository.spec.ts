@@ -4,7 +4,7 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { PrismaUsersRepository } from '../repositories/prisma-users.repository';
 import { mockPrismaService } from '../../../prisma/mocks/prisma-service.mock';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { UserRegisterDto } from 'src/auth/dtos/user-register.dto';
+import { UserRegisterDto } from '../../../auth/dtos/user-register.dto';
 
 describe('UsersRepository', () => {
   let repository: PrismaUsersRepository;
