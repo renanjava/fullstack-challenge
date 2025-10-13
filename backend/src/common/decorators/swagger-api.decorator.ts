@@ -8,7 +8,6 @@ import {
   ApiOkResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
 
 export type SwaggerParamsType = {
   description: string;
