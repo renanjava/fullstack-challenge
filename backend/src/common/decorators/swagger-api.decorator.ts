@@ -103,7 +103,7 @@ export const userResponseExample = {
   username: 'joao',
   created_at: '2025-01-01T00:00:00.000Z',
   updated_at: '2025-01-01T00:00:00.000Z',
-  deleted_at: null,
+  collaborator: null,
 } as const;
 
 export const collaboratorResponseExample = {
@@ -112,7 +112,6 @@ export const collaboratorResponseExample = {
   user_id: 'user-123',
   created_at: '2025-01-01T00:00:00.000Z',
   updated_at: '2025-01-01T00:00:00.000Z',
-  deleted_at: null,
   user: userResponseExample,
 } as const;
 
@@ -121,7 +120,6 @@ export const projectResponseExample = {
   name: 'Projeto XPTO',
   created_at: '2025-01-01T00:00:00.000Z',
   updated_at: '2025-01-01T00:00:00.000Z',
-  deleted_at: null,
   tasks: [],
 } as const;
 
@@ -132,7 +130,6 @@ export const taskResponseExample = {
   project_id: 'proj-123',
   created_at: '2025-01-01T00:00:00.000Z',
   updated_at: '2025-01-01T00:00:00.000Z',
-  deleted_at: null,
   project: {
     id: 'proj-123',
     name: 'Projeto XPTO',
@@ -148,13 +145,6 @@ export const timeTrackerResponseExample = {
   collaborator_id: 'collab-123',
   created_at: '2025-01-01T00:00:00.000Z',
   updated_at: '2025-01-01T00:00:00.000Z',
-  deleted_at: null,
-  tasks: {
-    id: 'task-123',
-    name: 'Implementar autenticação',
-  },
-  collaborators: {
-    id: 'collab-123',
-    name: 'Maria Silva',
-  },
+  tasks: taskResponseExample,
+  collaborators: collaboratorResponseExample,
 } as const;

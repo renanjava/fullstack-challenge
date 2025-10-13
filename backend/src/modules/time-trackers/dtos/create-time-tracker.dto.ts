@@ -23,6 +23,11 @@ export class CreateTimeTrackerDto {
   @Type(() => Date)
   end_date: Date;
 
+  @ApiPropertyOptional({
+    description: 'ID da TimeZone',
+    example: 'America/Sao_Paulo',
+    type: String,
+  })
   @Exclude()
   timezone_id: string;
 
