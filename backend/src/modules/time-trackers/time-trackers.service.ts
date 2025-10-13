@@ -10,9 +10,6 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateTimeTrackerDto } from './dtos/create-time-tracker.dto';
 import { UpdateTimeTrackerDto } from './dtos/update-time-tracker.dto';
-import { RABBITMQ_PATTERNS } from '../../queue/constants/rabbitmq.constants';
-import { CreateTimeTrackerMessageDto } from '../../queue/dtos/create-time-tracker-message.dto';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TimeTrackersService {
@@ -20,58 +17,55 @@ export class TimeTrackersService {
 
   constructor(
     private readonly timeTrackersRepository: PrismaTimeTrackersRepository,
-    @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
+    @Inject('RABBITMQ_SERVICE') private readonly rabbit: ClientProxy,
   ) {}
 
   async create(createTimeTrackerDto: CreateTimeTrackerDto) {
-    const endDate = createTimeTrackerDto.end_date;
-    const startDate = createTimeTrackerDto.start_date;
-
-    if (startDate > endDate) {
-      throw new BadRequestException(
-        'A data de início é maior que a data de fim',
-      );
-    }
-
-    const dateConflict = await this.timeTrackersRepository.verifyTimeConflict(
-      endDate,
-      startDate,
-    );
-    if (dateConflict.length > 0) {
-      throw new ConflictException(
-        'Já existe uma tarefa nesse intervalo de tempo',
-      );
-    }
-
-    const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    const message: CreateTimeTrackerMessageDto = {
-      ...createTimeTrackerDto,
-      timezone_id: timeZoneId,
-      correlationId: uuidv4(),
-      timestamp: new Date(),
-    };
-
-    this.logger.log(
-      `Enviando time tracker para fila. CorrelationId: ${message.correlationId}`,
-    );
-
     try {
-      this.rabbitClient.emit(RABBITMQ_PATTERNS.CREATE_TIME_TRACKER, message);
+      const endDate = createTimeTrackerDto.end_date;
+      const startDate = createTimeTrackerDto.start_date;
 
-      return {
+      if (startDate > endDate) {
+        throw new BadRequestException(
+          'A data de início é maior que a data de fim',
+        );
+      }
+
+      const dateConflict = await this.timeTrackersRepository.verifyTimeConflict(
+        endDate,
+        startDate,
+      );
+
+      if (dateConflict.length > 0) {
+        throw new ConflictException(
+          'Já existe uma tarefa nesse intervalo de tempo',
+        );
+      }
+
+      const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      this.logger.log('📤 Enviando mensagem para RabbitMQ...');
+      this.rabbit.emit('time-tracker-created', {
         ...createTimeTrackerDto,
         timezone_id: timeZoneId,
+      });
+
+      this.logger.log('✅ Mensagem enviada com sucesso');
+
+      return {
         message: 'Time tracker enviado para processamento',
-        correlationId: message.correlationId,
+        data: {
+          ...createTimeTrackerDto,
+          timezone_id: timeZoneId,
+        },
         status: 'pending',
       };
     } catch (error) {
       this.logger.error(
-        `Erro ao enviar para fila: ${error.message}`,
+        `❌ Erro ao processar time tracker: ${error.message}`,
         error.stack,
       );
-      throw new BadRequestException('Erro ao processar requisição');
+      throw error;
     }
   }
 
