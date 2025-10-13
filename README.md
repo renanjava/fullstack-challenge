@@ -264,6 +264,8 @@ npm install
 
 ### Docker Compose
 
+Antes de iniciar a aplicação com o Docker Compose, abra o Docker Desktop e certifique-se de que o Docker está em funcionamento. Isso é necessário para que os containers sejam executados corretamente.
+
 ```bash
 # Na raiz do projeto
 docker-compose up --build
