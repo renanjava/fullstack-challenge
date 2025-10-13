@@ -230,13 +230,14 @@ Time Tracker é uma aplicação fullstack completa para gerenciamento de tempo e
 #### 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/renanjava/fullstack_challenge
-cd fullstack_challenge
+git clone https://github.com/renanjava/fullstack-challenge
+cd fullstack-challenge
+code .
 ```
 
 #### 2. Configure as variáveis de ambiente:
 
-**Backend** (`backend/.env`):
+**Crie o arquivo .env no Backend** (`backend/.env`):
 
 ```env
 DATABASE_URL="postgresql://postgres:postgres@postgres:5432/fullstack_challenge?schema=public"
@@ -273,10 +274,10 @@ docker-compose up --build
 
 A aplicação estará disponível em:
 
-- **Frontend**: http://localhost:80
+- **Frontend**: http://localhost:80 (acesse a url pelo docker desktop por causa do NGINX)
 - **Backend**: http://localhost:3000
 - **Swagger**: http://localhost:3000/api
-- **RabbitMQ Management**: http://localhost:15672 (guest/guest)
+- **RabbitMQ Management**: http://localhost:15672 (admin/admin123)
 
 ## 📚 Principais Rotas da API
 
