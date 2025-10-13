@@ -3,6 +3,7 @@ import { Controller, Logger } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { PrismaTimeTrackersRepository } from './repositories/prisma-time-trackers.repository';
 import { CreateTimeTrackerDto } from './dtos/create-time-tracker.dto';
+import { RABBITMQ_PATTERNS } from '../../queue/constants/rabbitmq.constants';
 
 @Controller()
 export class TimeTrackersServiceWorker {
@@ -12,7 +13,7 @@ export class TimeTrackersServiceWorker {
     private readonly timeTrackersRepository: PrismaTimeTrackersRepository,
   ) {}
 
-  @EventPattern('time-tracker-created')
+  @EventPattern(RABBITMQ_PATTERNS.CREATE_TIME_TRACKER)
   async handleTimeTrackerCreated(@Payload() data: CreateTimeTrackerDto) {
     try {
       this.logger.log('🔥 Mensagem recebida do RabbitMQ');

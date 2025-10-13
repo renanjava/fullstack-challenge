@@ -9,17 +9,27 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+
+  const rabbitUrl = configService.get<string>('RABBITMQ_URL');
+  const rabbitQueue = configService.get<string>('RABBITMQ_QUEUE_TIME_TRACKER');
+
+  if (!rabbitUrl || !rabbitQueue) {
+    throw new Error(
+      `❌ Configuração RabbitMQ ausente! Verifique .env (RABBITMQ_URL e RABBITMQ_QUEUE_TIME_TRACKER)`,
+    );
+  }
+
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://admin:admin123@rabbitmq:5672'],
-      queue: process.env.RABBITMQ_QUEUE_TIME_TRACKER,
+      urls: [rabbitUrl],
+      queue: rabbitQueue,
       queueOptions: { durable: true },
     },
   });
 
   await app.startAllMicroservices();
-  const configService = app.get(ConfigService);
 
   const config = new DocumentBuilder()
     .setTitle('Fullstack Challenge')
@@ -43,15 +53,6 @@ async function bootstrap() {
 
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-
-  const rabbitUrl = configService.get<string>('RABBITMQ_URL');
-  const rabbitQueue = configService.get<string>('RABBITMQ_QUEUE_TIME_TRACKER');
-
-  if (!rabbitUrl || !rabbitQueue) {
-    throw new Error(
-      `❌ Configuração RabbitMQ ausente! Verifique .env (RABBITMQ_URL e RABBITMQ_QUEUE_TIME_TRACKER)`,
-    );
-  }
 
   await app.listen(process.env.PORT ?? 3000);
   logger.log(`🚀 HTTP Server rodando na porta ${process.env.PORT ?? 3000}`);

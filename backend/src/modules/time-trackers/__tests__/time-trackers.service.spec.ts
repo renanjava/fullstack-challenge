@@ -65,9 +65,8 @@ describe('TimeTrackersService', () => {
     const result = await service.create(timeTracker as CreateTimeTrackerDto);
 
     expect(result).toEqual({
-      message: rabbitmqMessage.message,
+      ...rabbitmqMessage,
       data: { ...timeTrackerWithCorrectTimeZoneId },
-      status: rabbitmqMessage.status,
     });
     expect(timeTrackersRepository.verifyTimeConflict).toHaveBeenCalledWith(
       timeTracker.end_date,

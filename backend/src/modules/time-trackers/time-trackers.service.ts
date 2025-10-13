@@ -10,6 +10,8 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateTimeTrackerDto } from './dtos/create-time-tracker.dto';
 import { UpdateTimeTrackerDto } from './dtos/update-time-tracker.dto';
+import { v4 as uuidv4 } from 'uuid';
+import { RABBITMQ_PATTERNS } from '../../queue/constants/rabbitmq.constants';
 
 @Injectable()
 export class TimeTrackersService {
@@ -43,9 +45,10 @@ export class TimeTrackersService {
       }
 
       const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const correlationId = uuidv4();
 
       this.logger.log('📤 Enviando mensagem para RabbitMQ...');
-      this.rabbit.emit('time-tracker-created', {
+      this.rabbit.emit(RABBITMQ_PATTERNS.CREATE_TIME_TRACKER, {
         ...createTimeTrackerDto,
         timezone_id: timeZoneId,
       });
@@ -58,6 +61,7 @@ export class TimeTrackersService {
           ...createTimeTrackerDto,
           timezone_id: timeZoneId,
         },
+        correlationId,
         status: 'pending',
       };
     } catch (error) {

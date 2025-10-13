@@ -1,27 +1,40 @@
 import { Module } from '@nestjs/common';
-import { TimeTrackersService } from './time-trackers.service';
-import { TimeTrackersController } from './time-trackers.controller';
-import { TimeTrackersServiceWorker } from './time-trackers.worker';
-import { PrismaModule } from '../../prisma/prisma.module';
-import { PrismaTimeTrackersRepository } from './repositories/prisma-time-trackers.repository';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PrismaModule } from '../../prisma/prisma.module';
+import { TimeTrackersController } from './time-trackers.controller';
+import { TimeTrackersService } from './time-trackers.service';
+import { TimeTrackersServiceWorker } from './time-trackers.worker';
+import { PrismaTimeTrackersRepository } from './repositories/prisma-time-trackers.repository';
 
 @Module({
   imports: [
     PrismaModule,
-    ClientsModule.register([
+    ConfigModule,
+    ClientsModule.registerAsync([
       {
         name: 'RABBITMQ_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: [
-            process.env.RABBITMQ_URL || 'amqp://admin:admin123@localhost:5672',
-          ],
-          queue:
-            process.env.RABBITMQ_QUEUE_TIME_TRACKER || 'time-tracker-queue',
-          queueOptions: {
-            durable: true,
-          },
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => {
+          const rabbitUrl = configService.get<string>('RABBITMQ_URL');
+          const queueName = configService.get<string>(
+            'RABBITMQ_QUEUE_TIME_TRACKER',
+          );
+          if (!rabbitUrl) {
+            throw new Error('RABBITMQ_URL não definida no .env');
+          }
+          if (!queueName) {
+            throw new Error('RABBITMQ_QUEUE_TIME_TRACKER não definida no .env');
+          }
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: [rabbitUrl],
+              queue: queueName,
+              queueOptions: { durable: true },
+            },
+          };
         },
       },
     ]),
