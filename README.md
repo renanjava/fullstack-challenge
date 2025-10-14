@@ -467,11 +467,11 @@ npx prisma db seed
 
 Utiliza **Faker.js** para gerar:
 
-- 10 usuários
+- 20 usuários
 - 20 colaboradores
-- 15 projetos
-- 50 tarefas
-- 100 registros de time tracker
+- 20 projetos
+- 10~20 tarefas
+- 20 registros de time tracker
 
 - Observação: o seed gerado é apenas dados fictícios para popular o banco de dados, portanto, ele não passa nas validações da service (alguns time trackers terá horários no intervalo de tempo de outro time tracker)
 
