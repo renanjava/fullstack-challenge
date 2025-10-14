@@ -449,11 +449,19 @@ Collaborator (0..1) ──> (N) TimeTracker
 ## 📊 Seeds
 
 Para popular o banco com dados fictícios:
+- Atualize a .env do backend:
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/fullstack_challenge?schema=public"
+DATABASE_NAME="fullstack_challenge"
+JWT_SECRET="CAFECOMLEITE"
+RABBITMQ_URL=amqp://admin:admin123@localhost:5672
+RABBITMQ_QUEUE_TIME_TRACKER=time-tracker-queue
+```
 
 ```bash
 cd backend
 npm install
-npm run seed
+npx prisma db seed
 ```
 
 Utiliza **Faker.js** para gerar:
@@ -463,6 +471,8 @@ Utiliza **Faker.js** para gerar:
 - 15 projetos
 - 50 tarefas
 - 100 registros de time tracker
+
+- Observação: o seed gerado é apenas dados fictícios para popular o banco de dados, portanto, ele não passa nas validações da service (alguns time trackers terá horários no intervalo de tempo de outro time tracker)
 
 ---
 
